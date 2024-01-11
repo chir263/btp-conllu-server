@@ -1,0 +1,1977 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Universal Dependencies</title>
+<link rel="stylesheet" type="text/css" href="../conllu/tooltip.css" />
+<script type="text/javascript" src="../conllu/jquery.js"></script>
+<script type="text/javascript" src="../conllu/tooltip.js"></script>
+<script type="text/javascript">
+var tts = [];
+var normal = [];
+function toggle(id, enhanced) {
+  unhold();
+  if (normal[id] && enhanced) {
+    $('svg#'+id+' .enhanced').css({'visibility':''});
+    $('svg#'+id+' .normal').css({'visibility':'hidden'});
+    normal[id] = false;
+  } else if (!normal[id] && !enhanced) {
+    $('svg#'+id+' .enhanced').css({'visibility':'hidden'});
+    $('svg#'+id+' .normal').css({'visibility':''});
+    normal[id] = true;
+  }
+}
+
+var holding  = false;
+var holdedge = false;
+var holdnode = false;
+var holdid  = '';
+var holdi = -1;
+var holdj = -1;
+
+function unhold() {
+  if (holding) {
+    holding = false;
+    if (holdnode) {
+      holdnode = false;
+      unmark(holdid, holdi);
+    }
+    if (holdedge) {
+      holdedge = false;
+      unmrk(holdid, holdi, holdj);
+    }
+    holdid = '';
+    holdi = -1;
+    holdj = -1;
+  }
+}
+function hold(id, i) {
+  if (holdnode && id == holdid && i == holdi) {
+    unhold();
+  } else {
+    unhold();
+    mark(id, i);
+    holding = true;
+    holdnode = true;
+    holdid = id;
+    holdi = i;
+  }
+}
+function hld(id, i, j) {
+  if (holdedge && id == holdid && i == holdi && j == holdj) {
+    unhold();
+  } else {
+    unhold();
+    mrk(id, i, j);
+    holding = true;
+    holdedge = true;
+    holdid = id;
+    holdi = i;
+    holdj = j;
+  }
+}
+function mark(id, i) {
+  var cl = normal[id] ? 'n' : 'e';
+  var t = tts[id][i-1];
+  tooltip.show(t[0] + ': <em>' + t[1] + '</em><br>\n' + t[2] + '<br>\n' + t[3] + '<br>\nLemma: ' + t[4] + (t[5] == "_" ? "" : '<br>\nXpos: ' + t[5]));
+  if (!holding) {
+    $('svg#' + id + ' .l' + cl + i).css({'fill':'blue','font-weight':'bold'});
+    $('svg#' + id + ' .e' + cl + i).css({'stroke':'blue','stroke-width':3});
+  }
+}
+function unmark(id, i) {
+  var cl = normal[id] ? 'n' : 'e';
+  tooltip.hide();
+  if (!holding) {
+    $('svg#' + id + ' .l' + cl + i).css({'fill':'black','font-weight':'normal'});
+    $('svg#' + id + ' .e' + cl + i).css({'stroke':'black','stroke-width':1});
+  }
+}
+function mrk(id, i, j) {
+  if (!holding) {
+    $('svg#' + id + ' .p' + i + 'p' + j).css({'fill':'blue','font-weight':'bold'});
+    $('svg#' + id + ' .q' + i + 'q' + j).css({'stroke':'blue','stroke-width':3});
+    $('svg#' + id + ' .q' + i).css({'stroke':'blue','stroke-width':3});
+    $('svg#' + id + ' .q' + j).css({'stroke':'blue','stroke-width':3});
+  }
+}
+function unmrk(id, i, j) {
+  if (!holding) {
+    $('svg#' + id + ' .p' + i + 'p' + j).css({'fill':'black','font-weight':'normal'});
+    $('svg#' + id + ' .q' + i + 'q' + j).css({'stroke':'black','stroke-width':1});
+    $('svg#' + id + ' .q' + i).css({'stroke':'black','stroke-width':1});
+    $('svg#' + id + ' .q' + j).css({'stroke':'black','stroke-width':1});
+  }
+}
+</script>
+<style type="text/css">
+  body { padding-bottom: 200px; }
+  #top {
+    margin-bottom: 2em;
+  }
+  div.comments {
+    padding: 1em;
+    margin: 2em 0px 1em 0px;
+    background-color: #f0f0ff;
+    white-space: pre-line;
+  }
+  div.svg {
+    margin: 40px 0px;
+  }
+  div.overflow {
+    overflow-x: auto;
+  }
+  .udcontrol input,
+  .udcontrol label {
+    cursor: pointer;
+  }
+  .udcontrol label:hover {
+    color: #0000e0;
+    text-decoration: underline;
+  }
+</style>
+</head>
+<body>
+<div class="comments"># sent_id = ud1
+# text = ik zie hem fietsen
+</div>
+<div class="overflow">
+<svg id="svg1" width="448" height="200">
+<g class="normal" style="visibility:hidden">
+<g fill="none" stroke="black" stroke-width="1">
+<path class="en1 en2 q1q2" d="M77 148 L77 188 C77 108 77 108 106 108 C136 108 136 108 136 188 L136 148" />
+<path class="en3 en2 q3q2" d="M259 148 L259 188 C259 108 259 108 229 108 C199 108 199 108 199 188 L199 148" />
+<path class="en2 q2q0" d="M157 148 L157 28" />
+<path class="en4 en2 q4q2" d="M413 148 L413 148 C413 68 413 68 295 68 C178 68 178 68 178 148 L178 148" />
+</g>
+<g fill="black" stroke-width="1" stroke="black">
+<path class="en1 en2 q1q2" d="M77 148 l3 -14 l-6 0 Z" />
+<path class="en3 en2 q3q2" d="M259 148 l3 -14 l-6 0 Z" />
+<path class="en2 en0 q2q0" d="M157 148 l3 -14 l-6 0 Z" />
+<path class="en4 en2 q4q2" d="M413 148 l3 -14 l-6 0 Z" />
+</g>
+<g fill="white" stroke="white" stroke-width="1" opacity="0.9">
+<rect x="81" y="87" width="51" height="19" />
+<rect x="213" y="87" width="32" height="19" />
+<rect x="137" y="7" width="39" height="19" />
+<rect x="265" y="47" width="60" height="19" />
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">
+<text class="ln1 ln2 p1p2" x="106" y="100" onclick="hld('svg1',1,2)" onmouseover="mrk('svg1',1,2)" onmouseout="unmrk('svg1',1,2)">nsubj</text>
+<text class="ln3 ln2 p3p2" x="229" y="100" onclick="hld('svg1',3,2)" onmouseover="mrk('svg1',3,2)" onmouseout="unmrk('svg1',3,2)">obj</text>
+<text class="ln2 ln0 p2p0" x="157" y="20" onclick="hld('svg1',2,0)" onmouseover="mrk('svg1',2,0)" onmouseout="unmrk('svg1',2,0)">root</text>
+<text class="ln4 ln2 p4p2" x="295" y="60" onclick="hld('svg1',4,2)" onmouseover="mrk('svg1',4,2)" onmouseout="unmrk('svg1',4,2)">xcomp</text>
+</g>
+</g>
+<g class="enhanced">
+<g fill="none" stroke="black" stroke-width="1">
+<path class="ee1 ee2 q1q2" d="M77 148 L77 188 C77 108 77 108 106 108 C136 108 136 108 136 188 L136 148" />
+<path class="ee3 ee2 q3q2" d="M259 148 L259 188 C259 108 259 108 229 108 C199 108 199 108 199 188 L199 148" />
+<path class="ee3 ee4 q3q4" d="M301 148 L301 188 C301 108 301 108 336 108 C371 108 371 108 371 188 L371 148" />
+<path class="ee2 q2q0" d="M157 148 L157 28" />
+<path class="ee4 ee2 q4q2" d="M413 148 L413 148 C413 68 413 68 295 68 C178 68 178 68 178 148 L178 148" />
+</g>
+<g fill="black" stroke-width="1" stroke="black">
+<path class="ee1 ee2 q1q2" d="M77 148 l3 -14 l-6 0 Z" />
+<path class="ee3 ee2 q3q2" d="M259 148 l3 -14 l-6 0 Z" />
+<path class="ee3 ee4 q3q4" d="M301 148 l3 -14 l-6 0 Z" />
+<path class="ee2 ee0 q2q0" d="M157 148 l3 -14 l-6 0 Z" />
+<path class="ee4 ee2 q4q2" d="M413 148 l3 -14 l-6 0 Z" />
+</g>
+<g fill="white" stroke="white" stroke-width="1" opacity="0.9">
+<rect x="81" y="87" width="51" height="19" />
+<rect x="213" y="87" width="32" height="19" />
+<rect x="287" y="87" width="97" height="19" />
+<rect x="137" y="7" width="39" height="19" />
+<rect x="265" y="47" width="60" height="19" />
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">
+<text class="le1 le2 p1p2" x="106" y="100" onclick="hld('svg1',1,2)" onmouseover="mrk('svg1',1,2)" onmouseout="unmrk('svg1',1,2)">nsubj</text>
+<text class="le3 le2 p3p2" x="229" y="100" onclick="hld('svg1',3,2)" onmouseover="mrk('svg1',3,2)" onmouseout="unmrk('svg1',3,2)">obj</text>
+<text class="le3 le4 p3p4" x="336" y="100" onclick="hld('svg1',3,4)" onmouseover="mrk('svg1',3,4)" onmouseout="unmrk('svg1',3,4)">nsubj:xsubj</text>
+<text class="le2 le0 p2p0" x="157" y="20" onclick="hld('svg1',2,0)" onmouseover="mrk('svg1',2,0)" onmouseout="unmrk('svg1',2,0)">root</text>
+<text class="le4 le2 p4p2" x="295" y="60" onclick="hld('svg1',4,2)" onmouseover="mrk('svg1',4,2)" onmouseout="unmrk('svg1',4,2)">xcomp</text>
+</g>
+</g>
+<g fill="#D0E0FF" stroke="black" stroke-width="1">
+<rect class="q1 en1 en2 ee1 ee2" x="4" y="148" width="104" height="48" rx="5" ry="5" />
+<rect class="q2 en1 en2 en3 en0 en4 ee1 ee2 ee3 ee0 ee4" x="116" y="148" width="104" height="48" rx="5" ry="5" />
+<rect class="q3 en3 en2 ee3 ee2 ee4" x="228" y="148" width="104" height="48" rx="5" ry="5" />
+<rect class="q4 en4 en2 ee3 ee4 ee2" x="340" y="148" width="104" height="48" rx="5" ry="5" />
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">
+<text x="56" y="167">PRON</text>
+<text x="168" y="167">VERB</text>
+<text x="280" y="167">PRON</text>
+<text x="392" y="167">VERB</text>
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle" font-style="italic">
+<text x="56" y="187">ik</text>
+<text x="168" y="187">zie</text>
+<text x="280" y="187">hem</text>
+<text x="392" y="187">fietsen</text>
+</g>
+<g opacity="0" stroke-width="1">
+<rect x="4" y="148" width="104" height="48" rx="5" ry="5" onclick="hold('svg1',1)" onmouseover="mark('svg1',1)" onmouseout="unmark('svg1',1)" />
+<rect x="116" y="148" width="104" height="48" rx="5" ry="5" onclick="hold('svg1',2)" onmouseover="mark('svg1',2)" onmouseout="unmark('svg1',2)" />
+<rect x="228" y="148" width="104" height="48" rx="5" ry="5" onclick="hold('svg1',3)" onmouseover="mark('svg1',3)" onmouseout="unmark('svg1',3)" />
+<rect x="340" y="148" width="104" height="48" rx="5" ry="5" onclick="hold('svg1',4)" onmouseover="mark('svg1',4)" onmouseout="unmark('svg1',4)" />
+</g>
+<g fill="#D0E0FF" stroke="black" stroke-width="1">
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" font-style="italic" text-anchor="middle">
+</g>
+
+</svg>
+</div>
+<script type="text/javascript">
+tts['svg1'] = [
+['1', 'ik','PRON','Case: Nom, Person: 1, PronType: Prs','ik','VNW|pers|pron|nomin|vol|1|ev'],
+['2', 'zie','VERB','Number: Sing, Tense: Pres, VerbForm: Fin','zien','WW|pv|tgw|ev'],
+['3', 'hem','PRON','Case: Acc, Person: 3, PronType: Prs','hem','VNW|pers|pron|obl|vol|3|ev|masc'],
+['4', 'fietsen','VERB','VerbForm: Inf','fietsen','WW|inf|vrij|zonder']
+];toggle('svg1',false);
+</script>
+<div class="udcontrol">
+<input type="radio" id="btnbsvg1" name="btnsvg1" onclick="toggle('svg1',false)" class="rb" checked /><label for="btnbsvg1">Basic</label>
+<input type="radio" id="btnesvg1" name="btnsvg1" onclick="toggle('svg1',true)" class="re" /><label for="btnesvg1">Enhanced</label>
+</div>
+<div class="comments"># sent_id = ud2
+# text = Jan komt vandaag en Piet morgen
+</div>
+<div class="overflow">
+<svg id="svg2" width="784" height="280">
+<g class="normal" style="visibility:hidden">
+<g fill="none" stroke="black" stroke-width="1">
+<path class="en1 en2 q1q2" d="M77 228 L77 268 C77 188 77 188 105 188 C134 188 134 188 134 268 L134 228" />
+<path class="en3 en2 q3q2" d="M259 228 L259 268 C259 188 259 188 230 188 C201 188 201 188 201 268 L201 228" />
+<path class="en4 en5 q4q5" d="M413 228 L413 268 C413 188 413 188 442 188 C472 188 472 188 472 268 L472 228" />
+<path class="en2 q2q0" d="M151 228 L151 28" />
+<path class="en7 en5 q7q5" d="M749 228 L749 188 C749 108 749 108 631 108 C514 108 514 108 514 188 L514 228" />
+<path class="en5 en2 q5q2" d="M493 228 L493 188 C493 108 493 108 338 108 C184 108 184 108 184 188 L184 228" />
+</g>
+<g fill="black" stroke-width="1" stroke="black">
+<path class="en1 en2 q1q2" d="M77 228 l3 -14 l-6 0 Z" />
+<path class="en3 en2 q3q2" d="M259 228 l3 -14 l-6 0 Z" />
+<path class="en4 en5 q4q5" d="M413 228 l3 -14 l-6 0 Z" />
+<path class="en2 en0 q2q0" d="M151 228 l3 -14 l-6 0 Z" />
+<path class="en7 en5 q7q5" d="M749 228 l3 -14 l-6 0 Z" />
+<path class="en5 en2 q5q2" d="M493 228 l3 -14 l-6 0 Z" />
+</g>
+<g fill="white" stroke="white" stroke-width="1" opacity="0.9">
+<rect x="80" y="167" width="51" height="19" />
+<rect x="195" y="167" width="70" height="19" />
+<rect x="429" y="167" width="26" height="19" />
+<rect x="131" y="7" width="39" height="19" />
+<rect x="600" y="87" width="63" height="19" />
+<rect x="318" y="87" width="41" height="19" />
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">
+<text class="ln1 ln2 p1p2" x="105" y="180" onclick="hld('svg2',1,2)" onmouseover="mrk('svg2',1,2)" onmouseout="unmrk('svg2',1,2)">nsubj</text>
+<text class="ln3 ln2 p3p2" x="230" y="180" onclick="hld('svg2',3,2)" onmouseover="mrk('svg2',3,2)" onmouseout="unmrk('svg2',3,2)">advmod</text>
+<text class="ln4 ln5 p4p5" x="442" y="180" onclick="hld('svg2',4,5)" onmouseover="mrk('svg2',4,5)" onmouseout="unmrk('svg2',4,5)">cc</text>
+<text class="ln2 ln0 p2p0" x="151" y="20" onclick="hld('svg2',2,0)" onmouseover="mrk('svg2',2,0)" onmouseout="unmrk('svg2',2,0)">root</text>
+<text class="ln7 ln5 p7p5" x="631" y="100" onclick="hld('svg2',7,5)" onmouseover="mrk('svg2',7,5)" onmouseout="unmrk('svg2',7,5)">orphan</text>
+<text class="ln5 ln2 p5p2" x="338" y="100" onclick="hld('svg2',5,2)" onmouseover="mrk('svg2',5,2)" onmouseout="unmrk('svg2',5,2)">conj</text>
+</g>
+</g>
+<g class="enhanced">
+<g fill="none" stroke="black" stroke-width="1">
+<path class="ee1 ee2 q1q2" d="M77 228 L77 268 C77 188 77 188 105 188 C134 188 134 188 134 268 L134 228" />
+<path class="ee3 ee2 q3q2" d="M259 228 L259 268 C259 188 259 188 230 188 C201 188 201 188 201 268 L201 228" />
+<path class="ee5 ee6 q5q6" d="M535 228 L535 268 C535 188 535 188 559 188 C584 188 584 188 584 268 L584 228" />
+<path class="ee7 ee6 q7q6" d="M707 228 L707 268 C707 188 707 188 677 188 C647 188 647 188 647 268 L647 228" />
+<path class="ee2 q2q0" d="M151 228 L151 28" />
+<path class="ee4 ee6 q4q6" d="M371 228 L371 228 C371 148 371 148 488 148 C605 148 605 148 605 228 L605 228" />
+<path class="ee6 ee2 q6q2" d="M626 228 L626 148 C626 68 626 68 397 68 C168 68 168 68 168 148 L168 228" />
+</g>
+<g fill="black" stroke-width="1" stroke="black">
+<path class="ee1 ee2 q1q2" d="M77 228 l3 -14 l-6 0 Z" />
+<path class="ee3 ee2 q3q2" d="M259 228 l3 -14 l-6 0 Z" />
+<path class="ee5 ee6 q5q6" d="M535 228 l3 -14 l-6 0 Z" />
+<path class="ee7 ee6 q7q6" d="M707 228 l3 -14 l-6 0 Z" />
+<path class="ee2 ee0 q2q0" d="M151 228 l3 -14 l-6 0 Z" />
+<path class="ee4 ee6 q4q6" d="M371 228 l3 -14 l-6 0 Z" />
+<path class="ee6 ee2 q6q2" d="M626 228 l3 -14 l-6 0 Z" />
+</g>
+<g fill="white" stroke="white" stroke-width="1" opacity="0.9">
+<rect x="80" y="167" width="51" height="19" />
+<rect x="195" y="167" width="70" height="19" />
+<rect x="534" y="167" width="51" height="19" />
+<rect x="642" y="167" width="70" height="19" />
+<rect x="131" y="7" width="39" height="19" />
+<rect x="475" y="127" width="26" height="19" />
+<rect x="365" y="47" width="64" height="19" />
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">
+<text class="le1 le2 p1p2" x="105" y="180" onclick="hld('svg2',1,2)" onmouseover="mrk('svg2',1,2)" onmouseout="unmrk('svg2',1,2)">nsubj</text>
+<text class="le3 le2 p3p2" x="230" y="180" onclick="hld('svg2',3,2)" onmouseover="mrk('svg2',3,2)" onmouseout="unmrk('svg2',3,2)">advmod</text>
+<text class="le5 le6 p5p6" x="559" y="180" onclick="hld('svg2',5,6)" onmouseover="mrk('svg2',5,6)" onmouseout="unmrk('svg2',5,6)">nsubj</text>
+<text class="le7 le6 p7p6" x="677" y="180" onclick="hld('svg2',7,6)" onmouseover="mrk('svg2',7,6)" onmouseout="unmrk('svg2',7,6)">advmod</text>
+<text class="le2 le0 p2p0" x="151" y="20" onclick="hld('svg2',2,0)" onmouseover="mrk('svg2',2,0)" onmouseout="unmrk('svg2',2,0)">root</text>
+<text class="le4 le6 p4p6" x="488" y="140" onclick="hld('svg2',4,6)" onmouseover="mrk('svg2',4,6)" onmouseout="unmrk('svg2',4,6)">cc</text>
+<text class="le6 le2 p6p2" x="397" y="60" onclick="hld('svg2',6,2)" onmouseover="mrk('svg2',6,2)" onmouseout="unmrk('svg2',6,2)">conj:en</text>
+</g>
+</g>
+<g fill="#D0E0FF" stroke="black" stroke-width="1">
+<rect class="q1 en1 en2 ee1 ee2" x="4" y="228" width="104" height="48" rx="5" ry="5" />
+<rect class="q2 en1 en2 en3 en0 en5 ee1 ee2 ee3 ee0 ee6" x="116" y="228" width="104" height="48" rx="5" ry="5" />
+<rect class="q3 en3 en2 ee3 ee2" x="228" y="228" width="104" height="48" rx="5" ry="5" />
+<rect class="q4 en4 en5 ee4 ee6" x="340" y="228" width="104" height="48" rx="5" ry="5" />
+<rect class="q5 en4 en5 en7 en2 ee5 ee6" x="452" y="228" width="104" height="48" rx="5" ry="5" />
+<rect class="enhanced q6 ee5 ee6 ee7 ee4 ee2" x="564" y="228" width="104" height="48" rx="5" ry="5" fill="#ffe0e0" />
+<rect class="q7 en7 en5 ee7 ee6" x="676" y="228" width="104" height="48" rx="5" ry="5" />
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">
+<text x="56" y="247">PROPN</text>
+<text x="168" y="247">VERB</text>
+<text x="280" y="247">ADV</text>
+<text x="392" y="247">CCONJ</text>
+<text x="504" y="247">PROPN</text>
+<text class="enhanced" x="616" y="247">VERB</text>
+<text x="728" y="247">ADV</text>
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle" font-style="italic">
+<text x="56" y="267">Jan</text>
+<text x="168" y="267">komt</text>
+<text x="280" y="267">vandaag</text>
+<text x="392" y="267">en</text>
+<text x="504" y="267">Piet</text>
+<text class="enhanced" x="616" y="267">komt</text>
+<text x="728" y="267">morgen</text>
+</g>
+<g opacity="0" stroke-width="1">
+<rect x="4" y="228" width="104" height="48" rx="5" ry="5" onclick="hold('svg2',1)" onmouseover="mark('svg2',1)" onmouseout="unmark('svg2',1)" />
+<rect x="116" y="228" width="104" height="48" rx="5" ry="5" onclick="hold('svg2',2)" onmouseover="mark('svg2',2)" onmouseout="unmark('svg2',2)" />
+<rect x="228" y="228" width="104" height="48" rx="5" ry="5" onclick="hold('svg2',3)" onmouseover="mark('svg2',3)" onmouseout="unmark('svg2',3)" />
+<rect x="340" y="228" width="104" height="48" rx="5" ry="5" onclick="hold('svg2',4)" onmouseover="mark('svg2',4)" onmouseout="unmark('svg2',4)" />
+<rect x="452" y="228" width="104" height="48" rx="5" ry="5" onclick="hold('svg2',5)" onmouseover="mark('svg2',5)" onmouseout="unmark('svg2',5)" />
+<rect class="enhanced" x="564" y="228" width="104" height="48" rx="5" ry="5" onclick="hold('svg2',6)" onmouseover="mark('svg2',6)" onmouseout="unmark('svg2',6)" />
+<rect x="676" y="228" width="104" height="48" rx="5" ry="5" onclick="hold('svg2',7)" onmouseover="mark('svg2',7)" onmouseout="unmark('svg2',7)" />
+</g>
+<g fill="#D0E0FF" stroke="black" stroke-width="1">
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" font-style="italic" text-anchor="middle">
+</g>
+
+</svg>
+</div>
+<script type="text/javascript">
+tts['svg2'] = [
+['1', 'Jan','PROPN','Gender: Com, Number: Sing','Jan','N|eigen|ev|basis|zijd|stan'],
+['2', 'komt','VERB','Number: Sing, Tense: Pres, VerbForm: Fin','komen','WW|pv|tgw|met-t'],
+['3', 'vandaag','ADV','','vandaag','BW'],
+['4', 'en','CCONJ','','en','VG|neven'],
+['5', 'Piet','PROPN','Gender: Com, Number: Sing','Piet','N|eigen|ev|basis|zijd|stan'],
+['5.1', 'komt','VERB','Number: Sing, Tense: Pres, VerbForm: Fin','komen','WW|pv|tgw|met-t'],
+['6', 'morgen','ADV','','morgen','BW']
+];toggle('svg2',false);
+</script>
+<div class="udcontrol">
+<input type="radio" id="btnbsvg2" name="btnsvg2" onclick="toggle('svg2',false)" class="rb" checked /><label for="btnbsvg2">Basic</label>
+<input type="radio" id="btnesvg2" name="btnsvg2" onclick="toggle('svg2',true)" class="re" /><label for="btnesvg2">Enhanced</label>
+</div>
+<div class="comments"># sent_id = 1
+# text = They buy and sell books.
+</div>
+<div class="overflow">
+<svg id="svg3" width="672" height="320">
+<g class="normal" style="visibility:hidden">
+<g fill="none" stroke="black" stroke-width="1">
+<path class="en1 en2 q1q2" d="M77 268 L77 308 C77 228 77 228 105 228 C134 228 134 228 134 308 L134 268" />
+<path class="en3 en4 q3q4" d="M301 268 L301 308 C301 228 301 228 329 228 C358 228 358 228 358 308 L358 268" />
+<path class="en2 q2q0" d="M151 268 L151 28" />
+<path class="en4 en2 q4q2" d="M375 268 L375 268 C375 188 375 188 288 188 C201 188 201 188 201 268 L201 268" />
+<path class="en5 en2 q5q2" d="M525 268 L525 228 C525 148 525 148 354 148 C184 148 184 148 184 228 L184 268" />
+<path class="en6 en2 q6q2" d="M595 268 L595 148 C595 68 595 68 381 68 C168 68 168 68 168 148 L168 268" />
+</g>
+<g fill="black" stroke-width="1" stroke="black">
+<path class="en1 en2 q1q2" d="M77 268 l3 -14 l-6 0 Z" />
+<path class="en3 en4 q3q4" d="M301 268 l3 -14 l-6 0 Z" />
+<path class="en2 en0 q2q0" d="M151 268 l3 -14 l-6 0 Z" />
+<path class="en4 en2 q4q2" d="M375 268 l3 -14 l-6 0 Z" />
+<path class="en5 en2 q5q2" d="M525 268 l3 -14 l-6 0 Z" />
+<path class="en6 en2 q6q2" d="M595 268 l3 -14 l-6 0 Z" />
+</g>
+<g fill="white" stroke="white" stroke-width="1" opacity="0.9">
+<rect x="80" y="207" width="51" height="19" />
+<rect x="316" y="207" width="26" height="19" />
+<rect x="131" y="7" width="39" height="19" />
+<rect x="267" y="167" width="41" height="19" />
+<rect x="338" y="127" width="32" height="19" />
+<rect x="355" y="47" width="52" height="19" />
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">
+<text class="ln1 ln2 p1p2" x="105" y="220" onclick="hld('svg3',1,2)" onmouseover="mrk('svg3',1,2)" onmouseout="unmrk('svg3',1,2)">nsubj</text>
+<text class="ln3 ln4 p3p4" x="329" y="220" onclick="hld('svg3',3,4)" onmouseover="mrk('svg3',3,4)" onmouseout="unmrk('svg3',3,4)">cc</text>
+<text class="ln2 ln0 p2p0" x="151" y="20" onclick="hld('svg3',2,0)" onmouseover="mrk('svg3',2,0)" onmouseout="unmrk('svg3',2,0)">root</text>
+<text class="ln4 ln2 p4p2" x="288" y="180" onclick="hld('svg3',4,2)" onmouseover="mrk('svg3',4,2)" onmouseout="unmrk('svg3',4,2)">conj</text>
+<text class="ln5 ln2 p5p2" x="354" y="140" onclick="hld('svg3',5,2)" onmouseover="mrk('svg3',5,2)" onmouseout="unmrk('svg3',5,2)">obj</text>
+<text class="ln6 ln2 p6p2" x="381" y="60" onclick="hld('svg3',6,2)" onmouseover="mrk('svg3',6,2)" onmouseout="unmrk('svg3',6,2)">punct</text>
+</g>
+</g>
+<g class="enhanced">
+<g fill="none" stroke="black" stroke-width="1">
+<path class="ee1 ee2 q1q2" d="M77 268 L77 308 C77 228 77 228 105 228 C134 228 134 228 134 308 L134 268" />
+<path class="ee5 ee4 q5q4" d="M483 268 L483 308 C483 228 483 228 454 228 C425 228 425 228 425 308 L425 268" />
+<path class="ee3 ee4 q3q4" d="M301 268 L301 308 C301 228 301 228 329 228 C358 228 358 228 358 308 L358 268" />
+<path class="ee2 q2q0" d="M151 268 L151 28" />
+<path class="ee4 ee2 q4q2" d="M375 268 L375 268 C375 188 375 188 288 188 C201 188 201 188 201 268 L201 268" />
+<path class="ee5 ee2 q5q2" d="M525 268 L525 228 C525 148 525 148 354 148 C184 148 184 148 184 228 L184 268" />
+<path class="ee1 ee4 q1q4" d="M35 268 L35 188 C35 108 35 108 213 108 C392 108 392 108 392 188 L392 268" />
+<path class="ee4 q4q0" d="M408 268 L408 28" />
+<path class="ee6 ee2 q6q2" d="M595 268 L595 148 C595 68 595 68 381 68 C168 68 168 68 168 148 L168 268" />
+</g>
+<g fill="black" stroke-width="1" stroke="black">
+<path class="ee1 ee2 q1q2" d="M77 268 l3 -14 l-6 0 Z" />
+<path class="ee5 ee4 q5q4" d="M483 268 l3 -14 l-6 0 Z" />
+<path class="ee3 ee4 q3q4" d="M301 268 l3 -14 l-6 0 Z" />
+<path class="ee2 ee0 q2q0" d="M151 268 l3 -14 l-6 0 Z" />
+<path class="ee4 ee2 q4q2" d="M375 268 l3 -14 l-6 0 Z" />
+<path class="ee5 ee2 q5q2" d="M525 268 l3 -14 l-6 0 Z" />
+<path class="ee1 ee4 q1q4" d="M35 268 l3 -14 l-6 0 Z" />
+<path class="ee4 ee0 q4q0" d="M408 268 l3 -14 l-6 0 Z" />
+<path class="ee6 ee2 q6q2" d="M595 268 l3 -14 l-6 0 Z" />
+</g>
+<g fill="white" stroke="white" stroke-width="1" opacity="0.9">
+<rect x="80" y="207" width="51" height="19" />
+<rect x="438" y="207" width="32" height="19" />
+<rect x="316" y="207" width="26" height="19" />
+<rect x="131" y="7" width="39" height="19" />
+<rect x="267" y="167" width="41" height="19" />
+<rect x="338" y="127" width="32" height="19" />
+<rect x="188" y="87" width="51" height="19" />
+<rect x="388" y="7" width="39" height="19" />
+<rect x="355" y="47" width="52" height="19" />
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">
+<text class="le1 le2 p1p2" x="105" y="220" onclick="hld('svg3',1,2)" onmouseover="mrk('svg3',1,2)" onmouseout="unmrk('svg3',1,2)">nsubj</text>
+<text class="le5 le4 p5p4" x="454" y="220" onclick="hld('svg3',5,4)" onmouseover="mrk('svg3',5,4)" onmouseout="unmrk('svg3',5,4)">obj</text>
+<text class="le3 le4 p3p4" x="329" y="220" onclick="hld('svg3',3,4)" onmouseover="mrk('svg3',3,4)" onmouseout="unmrk('svg3',3,4)">cc</text>
+<text class="le2 le0 p2p0" x="151" y="20" onclick="hld('svg3',2,0)" onmouseover="mrk('svg3',2,0)" onmouseout="unmrk('svg3',2,0)">root</text>
+<text class="le4 le2 p4p2" x="288" y="180" onclick="hld('svg3',4,2)" onmouseover="mrk('svg3',4,2)" onmouseout="unmrk('svg3',4,2)">conj</text>
+<text class="le5 le2 p5p2" x="354" y="140" onclick="hld('svg3',5,2)" onmouseover="mrk('svg3',5,2)" onmouseout="unmrk('svg3',5,2)">obj</text>
+<text class="le1 le4 p1p4" x="213" y="100" onclick="hld('svg3',1,4)" onmouseover="mrk('svg3',1,4)" onmouseout="unmrk('svg3',1,4)">nsubj</text>
+<text class="le4 le0 p4p0" x="408" y="20" onclick="hld('svg3',4,0)" onmouseover="mrk('svg3',4,0)" onmouseout="unmrk('svg3',4,0)">root</text>
+<text class="le6 le2 p6p2" x="381" y="60" onclick="hld('svg3',6,2)" onmouseover="mrk('svg3',6,2)" onmouseout="unmrk('svg3',6,2)">punct</text>
+</g>
+</g>
+<g fill="#D0E0FF" stroke="black" stroke-width="1">
+<rect class="q1 en1 en2 ee1 ee2 ee4" x="4" y="268" width="104" height="48" rx="5" ry="5" />
+<rect class="q2 en1 en2 en0 en4 en5 en6 ee1 ee2 ee0 ee4 ee5 ee6" x="116" y="268" width="104" height="48" rx="5" ry="5" />
+<rect class="q3 en3 en4 ee3 ee4" x="228" y="268" width="104" height="48" rx="5" ry="5" />
+<rect class="q4 en3 en4 en2 ee5 ee4 ee3 ee2 ee1 ee0" x="340" y="268" width="104" height="48" rx="5" ry="5" />
+<rect class="q5 en5 en2 ee5 ee4 ee2" x="452" y="268" width="104" height="48" rx="5" ry="5" />
+<rect class="q6 en6 en2 ee6 ee2" x="564" y="268" width="104" height="48" rx="5" ry="5" />
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">
+<text x="56" y="287">PRON</text>
+<text x="168" y="287">VERB</text>
+<text x="280" y="287">CONJ</text>
+<text x="392" y="287">VERB</text>
+<text x="504" y="287">NOUN</text>
+<text x="616" y="287">PUNCT</text>
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle" font-style="italic">
+<text x="56" y="307">They</text>
+<text x="168" y="307">buy</text>
+<text x="280" y="307">and</text>
+<text x="392" y="307">sell</text>
+<text x="504" y="307">books</text>
+<text x="616" y="307">.</text>
+</g>
+<g opacity="0" stroke-width="1">
+<rect x="4" y="268" width="104" height="48" rx="5" ry="5" onclick="hold('svg3',1)" onmouseover="mark('svg3',1)" onmouseout="unmark('svg3',1)" />
+<rect x="116" y="268" width="104" height="48" rx="5" ry="5" onclick="hold('svg3',2)" onmouseover="mark('svg3',2)" onmouseout="unmark('svg3',2)" />
+<rect x="228" y="268" width="104" height="48" rx="5" ry="5" onclick="hold('svg3',3)" onmouseover="mark('svg3',3)" onmouseout="unmark('svg3',3)" />
+<rect x="340" y="268" width="104" height="48" rx="5" ry="5" onclick="hold('svg3',4)" onmouseover="mark('svg3',4)" onmouseout="unmark('svg3',4)" />
+<rect x="452" y="268" width="104" height="48" rx="5" ry="5" onclick="hold('svg3',5)" onmouseover="mark('svg3',5)" onmouseout="unmark('svg3',5)" />
+<rect x="564" y="268" width="104" height="48" rx="5" ry="5" onclick="hold('svg3',6)" onmouseover="mark('svg3',6)" onmouseout="unmark('svg3',6)" />
+</g>
+<g fill="#D0E0FF" stroke="black" stroke-width="1">
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" font-style="italic" text-anchor="middle">
+</g>
+
+</svg>
+</div>
+<script type="text/javascript">
+tts['svg3'] = [
+['1', 'They','PRON','Case: Nom, Number: Plur','they','PRP'],
+['2', 'buy','VERB','Number: Plur, Person: 3, Tense: Pres','buy','VBP'],
+['3', 'and','CONJ','','and','CC'],
+['4', 'sell','VERB','Number: Plur, Person: 3, Tense: Pres','sell','VBP'],
+['5', 'books','NOUN','Number: Plur','book','NNS'],
+['6', '.','PUNCT','','.','.']
+];toggle('svg3',false);
+</script>
+<div class="udcontrol">
+<input type="radio" id="btnbsvg3" name="btnsvg3" onclick="toggle('svg3',false)" class="rb" checked /><label for="btnbsvg3">Basic</label>
+<input type="radio" id="btnesvg3" name="btnsvg3" onclick="toggle('svg3',true)" class="re" /><label for="btnesvg3">Enhanced</label>
+</div>
+<div class="comments"># sent_id = 2
+# text = I have no clue.
+</div>
+<div class="overflow">
+<svg id="svg4" width="560" height="200">
+<g class="normal" style="visibility:hidden">
+<g fill="none" stroke="black" stroke-width="1">
+<path class="en1 en2 q1q2" d="M77 148 L77 188 C77 108 77 108 106 108 C136 108 136 108 136 188 L136 148" />
+<path class="en3 en4 q3q4" d="M301 148 L301 188 C301 108 301 108 336 108 C371 108 371 108 371 188 L371 148" />
+<path class="en2 q2q0" d="M157 148 L157 28" />
+<path class="en4 en2 q4q2" d="M413 148 L413 148 C413 68 413 68 306 68 C199 68 199 68 199 148 L199 148" />
+<path class="en5 en2 q5q2" d="M483 148 L483 108 C483 28 483 28 330 28 C178 28 178 28 178 108 L178 148" />
+</g>
+<g fill="black" stroke-width="1" stroke="black">
+<path class="en1 en2 q1q2" d="M77 148 l3 -14 l-6 0 Z" />
+<path class="en3 en4 q3q4" d="M301 148 l3 -14 l-6 0 Z" />
+<path class="en2 en0 q2q0" d="M157 148 l3 -14 l-6 0 Z" />
+<path class="en4 en2 q4q2" d="M413 148 l3 -14 l-6 0 Z" />
+<path class="en5 en2 q5q2" d="M483 148 l3 -14 l-6 0 Z" />
+</g>
+<g fill="white" stroke="white" stroke-width="1" opacity="0.9">
+<rect x="81" y="87" width="51" height="19" />
+<rect x="319" y="87" width="33" height="19" />
+<rect x="137" y="7" width="39" height="19" />
+<rect x="290" y="47" width="32" height="19" />
+<rect x="304" y="7" width="52" height="19" />
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">
+<text class="ln1 ln2 p1p2" x="106" y="100" onclick="hld('svg4',1,2)" onmouseover="mrk('svg4',1,2)" onmouseout="unmrk('svg4',1,2)">nsubj</text>
+<text class="ln3 ln4 p3p4" x="336" y="100" onclick="hld('svg4',3,4)" onmouseover="mrk('svg4',3,4)" onmouseout="unmrk('svg4',3,4)">det</text>
+<text class="ln2 ln0 p2p0" x="157" y="20" onclick="hld('svg4',2,0)" onmouseover="mrk('svg4',2,0)" onmouseout="unmrk('svg4',2,0)">root</text>
+<text class="ln4 ln2 p4p2" x="306" y="60" onclick="hld('svg4',4,2)" onmouseover="mrk('svg4',4,2)" onmouseout="unmrk('svg4',4,2)">obj</text>
+<text class="ln5 ln2 p5p2" x="330" y="20" onclick="hld('svg4',5,2)" onmouseover="mrk('svg4',5,2)" onmouseout="unmrk('svg4',5,2)">punct</text>
+</g>
+</g>
+<g fill="#D0E0FF" stroke="black" stroke-width="1">
+<rect class="q1 en1 en2" x="4" y="148" width="104" height="48" rx="5" ry="5" />
+<rect class="q2 en1 en2 en0 en4 en5" x="116" y="148" width="104" height="48" rx="5" ry="5" />
+<rect class="q3 en3 en4" x="228" y="148" width="104" height="48" rx="5" ry="5" />
+<rect class="q4 en3 en4 en2" x="340" y="148" width="104" height="48" rx="5" ry="5" />
+<rect class="q5 en5 en2" x="452" y="148" width="104" height="48" rx="5" ry="5" />
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">
+<text x="56" y="167">PRON</text>
+<text x="168" y="167">VERB</text>
+<text x="280" y="167">DET</text>
+<text x="392" y="167">NOUN</text>
+<text x="504" y="167">PUNCT</text>
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle" font-style="italic">
+<text x="56" y="187">I</text>
+<text x="168" y="187">have</text>
+<text x="280" y="187">no</text>
+<text x="392" y="187">clue</text>
+<text x="504" y="187">.</text>
+</g>
+<g opacity="0" stroke-width="1">
+<rect x="4" y="148" width="104" height="48" rx="5" ry="5" onclick="hold('svg4',1)" onmouseover="mark('svg4',1)" onmouseout="unmark('svg4',1)" />
+<rect x="116" y="148" width="104" height="48" rx="5" ry="5" onclick="hold('svg4',2)" onmouseover="mark('svg4',2)" onmouseout="unmark('svg4',2)" />
+<rect x="228" y="148" width="104" height="48" rx="5" ry="5" onclick="hold('svg4',3)" onmouseover="mark('svg4',3)" onmouseout="unmark('svg4',3)" />
+<rect x="340" y="148" width="104" height="48" rx="5" ry="5" onclick="hold('svg4',4)" onmouseover="mark('svg4',4)" onmouseout="unmark('svg4',4)" />
+<rect x="452" y="148" width="104" height="48" rx="5" ry="5" onclick="hold('svg4',5)" onmouseover="mark('svg4',5)" onmouseout="unmark('svg4',5)" />
+</g>
+<g fill="#D0E0FF" stroke="black" stroke-width="1">
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" font-style="italic" text-anchor="middle">
+</g>
+
+</svg>
+</div>
+<script type="text/javascript">
+tts['svg4'] = [
+['1', 'I','PRON','Case: Nom, Number: Sing, Person: 1','I','PRP'],
+['2', 'have','VERB','Number: Sing, Person: 1, Tense: Pres','have','VBP'],
+['3', 'no','DET','PronType: Neg','no','DT'],
+['4', 'clue','NOUN','Number: Sing','clue','NN'],
+['5', '.','PUNCT','','.','.']
+];toggle('svg4',false);
+</script>
+<div class="udcontrol">
+<input type="radio" id="btnbsvg4" name="btnsvg4" onclick="toggle('svg4',true)" class="rb" checked /><label for="btnbsvg4">Basic</label>
+</div>
+<div class="comments"># sent_id = panc0.s4
+# text = तत् यथानुश्रूयते।
+# translit = tat yathānuśrūyate.
+# text_fr = Voilà ce qui nous est parvenu par la tradition orale.
+# text_en = This is what is heard.
+</div>
+<div class="overflow">
+<svg id="svg5" width="448" height="192">
+<g class="normal" style="visibility:hidden">
+<g fill="none" stroke="black" stroke-width="1">
+<path class="en2 en3 q2q3" d="M189 108 L189 148 C189 68 189 68 218 68 C248 68 248 68 248 148 L248 108" />
+<path class="en4 en3 q4q3" d="M371 108 L371 148 C371 68 371 68 341 68 C311 68 311 68 311 148 L311 108" />
+<path class="en1 en3 q1q3" d="M77 108 L77 108 C77 28 77 28 173 28 C269 28 269 28 269 108 L269 108" />
+<path class="en3 q3q0" d="M290 108 L290 28" />
+</g>
+<g fill="black" stroke-width="1" stroke="black">
+<path class="en2 en3 q2q3" d="M189 108 l3 -14 l-6 0 Z" />
+<path class="en4 en3 q4q3" d="M371 108 l3 -14 l-6 0 Z" />
+<path class="en1 en3 q1q3" d="M77 108 l3 -14 l-6 0 Z" />
+<path class="en3 en0 q3q0" d="M290 108 l3 -14 l-6 0 Z" />
+</g>
+<g fill="white" stroke="white" stroke-width="1" opacity="0.9">
+<rect x="183" y="47" width="70" height="19" />
+<rect x="315" y="47" width="52" height="19" />
+<rect x="147" y="7" width="51" height="19" />
+<rect x="270" y="7" width="39" height="19" />
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">
+<text class="ln2 ln3 p2p3" x="218" y="60" onclick="hld('svg5',2,3)" onmouseover="mrk('svg5',2,3)" onmouseout="unmrk('svg5',2,3)">advmod</text>
+<text class="ln4 ln3 p4p3" x="341" y="60" onclick="hld('svg5',4,3)" onmouseover="mrk('svg5',4,3)" onmouseout="unmrk('svg5',4,3)">punct</text>
+<text class="ln1 ln3 p1p3" x="173" y="20" onclick="hld('svg5',1,3)" onmouseover="mrk('svg5',1,3)" onmouseout="unmrk('svg5',1,3)">nsubj</text>
+<text class="ln3 ln0 p3p0" x="290" y="20" onclick="hld('svg5',3,0)" onmouseover="mrk('svg5',3,0)" onmouseout="unmrk('svg5',3,0)">root</text>
+</g>
+</g>
+<g fill="#D0E0FF" stroke="black" stroke-width="1">
+<rect class="q1 en1 en3" x="4" y="108" width="104" height="48" rx="5" ry="5" />
+<rect class="q2 en2 en3" x="116" y="108" width="104" height="48" rx="5" ry="5" />
+<rect class="q3 en2 en3 en4 en1 en0" x="228" y="108" width="104" height="48" rx="5" ry="5" />
+<rect class="q4 en4 en3" x="340" y="108" width="104" height="48" rx="5" ry="5" />
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">
+<text x="56" y="127">DET</text>
+<text x="168" y="127">ADV</text>
+<text x="280" y="127">VERB</text>
+<text x="392" y="127">PUNCT</text>
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle" font-style="italic">
+<text x="56" y="147">तत्</text>
+<text x="168" y="147">यथा</text>
+<text x="280" y="147">अनुश्रूयते</text>
+<text x="392" y="147">।</text>
+</g>
+<g opacity="0" stroke-width="1">
+<rect x="4" y="108" width="104" height="48" rx="5" ry="5" onclick="hold('svg5',1)" onmouseover="mark('svg5',1)" onmouseout="unmark('svg5',1)" />
+<rect x="116" y="108" width="104" height="48" rx="5" ry="5" onclick="hold('svg5',2)" onmouseover="mark('svg5',2)" onmouseout="unmark('svg5',2)" />
+<rect x="228" y="108" width="104" height="48" rx="5" ry="5" onclick="hold('svg5',3)" onmouseover="mark('svg5',3)" onmouseout="unmark('svg5',3)" />
+<rect x="340" y="108" width="104" height="48" rx="5" ry="5" onclick="hold('svg5',4)" onmouseover="mark('svg5',4)" onmouseout="unmark('svg5',4)" />
+</g>
+<g fill="#D0E0FF" stroke="black" stroke-width="1">
+<rect x="116" y="160" width="216" height="28" rx="5" ry="5" />
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" font-style="italic" text-anchor="middle">
+<text x="224" y="179">यथानुश्रूयते</text>
+</g>
+
+</svg>
+</div>
+<script type="text/javascript">
+tts['svg5'] = [
+['1', 'तत्','DET','Case: Nom, …, PronType: Dem','तद्','_'],
+['2', 'यथा','ADV','PronType: Rel','यथा','_'],
+['3', 'अनुश्रूयते','VERB','Mood: Ind, …, Voice: Pass','अनु-श्रु','_'],
+['4', '।','PUNCT','','।','_']
+];toggle('svg5',false);
+</script>
+<div class="udcontrol">
+<input type="radio" id="btnbsvg5" name="btnsvg5" onclick="toggle('svg5',true)" class="rb" checked /><label for="btnbsvg5">Basic</label>
+</div>
+<div class="comments"># sent_id = mf920901-001-p1s1A
+# text = Slovenská ústava: pro i proti
+# text_en = Slovak constitution: pros and cons
+</div>
+<div class="overflow">
+<svg id="svg6" width="672" height="160">
+<g class="normal" style="visibility:hidden">
+<g fill="none" stroke="black" stroke-width="1">
+<path class="en1 en2 q1q2" d="M77 108 L77 148 C77 68 77 68 106 68 C136 68 136 68 136 148 L136 108" />
+<path class="en3 en2 q3q2" d="M259 108 L259 148 C259 68 259 68 229 68 C199 68 199 68 199 148 L199 108" />
+<path class="en5 en6 q5q6" d="M525 108 L525 148 C525 68 525 68 560 68 C595 68 595 68 595 148 L595 108" />
+<path class="en2 q2q0" d="M157 108 L157 28" />
+<path class="en4 en2 q4q2" d="M371 108 L371 108 C371 28 371 28 274 28 C178 28 178 28 178 108 L178 108" />
+<path class="en6 en4 q6q4" d="M637 108 L637 108 C637 28 637 28 525 28 C413 28 413 28 413 108 L413 108" />
+</g>
+<g fill="black" stroke-width="1" stroke="black">
+<path class="en1 en2 q1q2" d="M77 108 l3 -14 l-6 0 Z" />
+<path class="en3 en2 q3q2" d="M259 108 l3 -14 l-6 0 Z" />
+<path class="en5 en6 q5q6" d="M525 108 l3 -14 l-6 0 Z" />
+<path class="en2 en0 q2q0" d="M157 108 l3 -14 l-6 0 Z" />
+<path class="en4 en2 q4q2" d="M371 108 l3 -14 l-6 0 Z" />
+<path class="en6 en4 q6q4" d="M637 108 l3 -14 l-6 0 Z" />
+</g>
+<g fill="white" stroke="white" stroke-width="1" opacity="0.9">
+<rect x="81" y="47" width="51" height="19" />
+<rect x="203" y="47" width="52" height="19" />
+<rect x="547" y="47" width="26" height="19" />
+<rect x="137" y="7" width="39" height="19" />
+<rect x="246" y="7" width="56" height="19" />
+<rect x="504" y="7" width="41" height="19" />
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">
+<text class="ln1 ln2 p1p2" x="106" y="60" onclick="hld('svg6',1,2)" onmouseover="mrk('svg6',1,2)" onmouseout="unmrk('svg6',1,2)">amod</text>
+<text class="ln3 ln2 p3p2" x="229" y="60" onclick="hld('svg6',3,2)" onmouseover="mrk('svg6',3,2)" onmouseout="unmrk('svg6',3,2)">punct</text>
+<text class="ln5 ln6 p5p6" x="560" y="60" onclick="hld('svg6',5,6)" onmouseover="mrk('svg6',5,6)" onmouseout="unmrk('svg6',5,6)">cc</text>
+<text class="ln2 ln0 p2p0" x="157" y="20" onclick="hld('svg6',2,0)" onmouseover="mrk('svg6',2,0)" onmouseout="unmrk('svg6',2,0)">root</text>
+<text class="ln4 ln2 p4p2" x="274" y="20" onclick="hld('svg6',4,2)" onmouseover="mrk('svg6',4,2)" onmouseout="unmrk('svg6',4,2)">appos</text>
+<text class="ln6 ln4 p6p4" x="525" y="20" onclick="hld('svg6',6,4)" onmouseover="mrk('svg6',6,4)" onmouseout="unmrk('svg6',6,4)">conj</text>
+</g>
+</g>
+<g fill="#D0E0FF" stroke="black" stroke-width="1">
+<rect class="q1 en1 en2" x="4" y="108" width="104" height="48" rx="5" ry="5" />
+<rect class="q2 en1 en2 en3 en0 en4" x="116" y="108" width="104" height="48" rx="5" ry="5" />
+<rect class="q3 en3 en2" x="228" y="108" width="104" height="48" rx="5" ry="5" />
+<rect class="q4 en4 en2 en6" x="340" y="108" width="104" height="48" rx="5" ry="5" />
+<rect class="q5 en5 en6" x="452" y="108" width="104" height="48" rx="5" ry="5" />
+<rect class="q6 en5 en6 en4" x="564" y="108" width="104" height="48" rx="5" ry="5" />
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">
+<text x="56" y="127">ADJ</text>
+<text x="168" y="127">NOUN</text>
+<text x="280" y="127">PUNCT</text>
+<text x="392" y="127">ADP</text>
+<text x="504" y="127">CCONJ</text>
+<text x="616" y="127">ADP</text>
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle" font-style="italic">
+<text x="56" y="147">Slovenská</text>
+<text x="168" y="147">ústava</text>
+<text x="280" y="147">:</text>
+<text x="392" y="147">pro</text>
+<text x="504" y="147">i</text>
+<text x="616" y="147">proti</text>
+</g>
+<g opacity="0" stroke-width="1">
+<rect x="4" y="108" width="104" height="48" rx="5" ry="5" onclick="hold('svg6',1)" onmouseover="mark('svg6',1)" onmouseout="unmark('svg6',1)" />
+<rect x="116" y="108" width="104" height="48" rx="5" ry="5" onclick="hold('svg6',2)" onmouseover="mark('svg6',2)" onmouseout="unmark('svg6',2)" />
+<rect x="228" y="108" width="104" height="48" rx="5" ry="5" onclick="hold('svg6',3)" onmouseover="mark('svg6',3)" onmouseout="unmark('svg6',3)" />
+<rect x="340" y="108" width="104" height="48" rx="5" ry="5" onclick="hold('svg6',4)" onmouseover="mark('svg6',4)" onmouseout="unmark('svg6',4)" />
+<rect x="452" y="108" width="104" height="48" rx="5" ry="5" onclick="hold('svg6',5)" onmouseover="mark('svg6',5)" onmouseout="unmark('svg6',5)" />
+<rect x="564" y="108" width="104" height="48" rx="5" ry="5" onclick="hold('svg6',6)" onmouseover="mark('svg6',6)" onmouseout="unmark('svg6',6)" />
+</g>
+<g fill="#D0E0FF" stroke="black" stroke-width="1">
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" font-style="italic" text-anchor="middle">
+</g>
+
+</svg>
+</div>
+<script type="text/javascript">
+tts['svg6'] = [
+['1', 'Slovenská','ADJ','Case: Nom, Degree: Pos, Gender: Fem, Number: Sing, Polarity: Pos','slovenský','AAFS1----1A----'],
+['2', 'ústava','NOUN','Case: Nom, Gender: Fem, Number: Sing, Polarity: Pos','ústava','NNFS1-----A----'],
+['3', ':','PUNCT','',':','Z:-------------'],
+['4', 'pro','ADP','Case: Acc','pro','RR--4----------'],
+['5', 'i','CCONJ','','i','J^-------------'],
+['6', 'proti','ADP','Case: Dat','proti','RR--3----------']
+];toggle('svg6',false);
+</script>
+<div class="udcontrol">
+<input type="radio" id="btnbsvg6" name="btnsvg6" onclick="toggle('svg6',true)" class="rb" checked /><label for="btnbsvg6">Basic</label>
+</div>
+<div class="comments"># sent_id = wiki-6983.p.9.s.2
+# text = Partijbestuurslid Vlaams Blok ( 1987-2004 ) en Vlaams Belang ( 2004-... )
+</div>
+<div class="overflow">
+<svg id="svg7" width="1540" height="440">
+<g class="normal" style="visibility:hidden">
+<g fill="none" stroke="black" stroke-width="1">
+<path class="en2 en1 q2q1" d="M187 388 L187 428 C187 348 187 348 159 348 C131 348 131 348 131 428 L131 388" />
+<path class="en3 en2 q3q2" d="M299 388 L299 428 C299 348 299 348 264 348 C229 348 229 348 229 428 L229 388" />
+<path class="en10 en9 q10q9" d="M1127 388 L1127 428 C1127 348 1127 348 1095 348 C1064 348 1064 348 1064 428 L1064 388" />
+<path class="en1 q1q0" d="M20 388 L20 28" />
+<path class="en4 en1 q4q1" d="M411 388 L411 388 C411 308 411 308 264 308 C117 308 117 308 117 388 L117 388" />
+<path class="en9 en12 q9q12" d="M1036 388 L1036 388 C1036 308 1036 308 1188 308 C1340 308 1340 308 1340 388 L1340 388" />
+<path class="en5 en1 q5q1" d="M524 388 L524 348 C524 268 524 268 313 268 C103 268 103 268 103 348 L103 388" />
+<path class="en7 en12 q7q12" d="M751 388 L751 308 C751 228 751 228 1066 228 C1382 228 1382 228 1382 308 L1382 388" />
+<path class="en6 en1 q6q1" d="M639 388 L639 308 C639 228 639 228 364 228 C89 228 89 228 89 308 L89 388" />
+<path class="en11 en1 q11q1" d="M1239 388 L1239 228 C1239 148 1239 148 650 148 C62 148 62 148 62 228 L62 388" />
+<path class="en12 en1 q12q1" d="M1403 388 L1403 188 C1403 108 1403 108 725 108 C48 108 48 108 48 188 L48 388" />
+<path class="en13 en1 q13q1" d="M1463 388 L1463 148 C1463 68 1463 68 748 68 C34 68 34 68 34 148 L34 388" />
+</g>
+<g fill="black" stroke-width="1" stroke="black">
+<path class="en2 en1 q2q1" d="M187 388 l3 -14 l-6 0 Z" />
+<path class="en3 en2 q3q2" d="M299 388 l3 -14 l-6 0 Z" />
+<path class="en10 en9 q10q9" d="M1127 388 l3 -14 l-6 0 Z" />
+<path class="en1 en0 q1q0" d="M20 388 l3 -14 l-6 0 Z" />
+<path class="en4 en1 q4q1" d="M411 388 l3 -14 l-6 0 Z" />
+<path class="en9 en12 q9q12" d="M1036 388 l3 -14 l-6 0 Z" />
+<path class="en5 en1 q5q1" d="M524 388 l3 -14 l-6 0 Z" />
+<path class="en7 en12 q7q12" d="M751 388 l3 -14 l-6 0 Z" />
+<path class="en6 en1 q6q1" d="M639 388 l3 -14 l-6 0 Z" />
+<path class="en11 en1 q11q1" d="M1239 388 l3 -14 l-6 0 Z" />
+<path class="en12 en1 q12q1" d="M1403 388 l3 -14 l-6 0 Z" />
+<path class="en13 en1 q13q1" d="M1463 388 l3 -14 l-6 0 Z" />
+</g>
+<g fill="white" stroke="white" stroke-width="1" opacity="0.9">
+<rect x="131" y="327" width="56" height="19" />
+<rect x="248" y="327" width="32" height="19" />
+<rect x="1079" y="327" width="32" height="19" />
+<rect x="0" y="7" width="39" height="19" />
+<rect x="238" y="287" width="52" height="19" />
+<rect x="1156" y="287" width="63" height="19" />
+<rect x="275" y="247" width="76" height="19" />
+<rect x="1053" y="207" width="26" height="19" />
+<rect x="338" y="207" width="52" height="19" />
+<rect x="624" y="127" width="52" height="19" />
+<rect x="705" y="87" width="41" height="19" />
+<rect x="722" y="47" width="52" height="19" />
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">
+<text class="ln2 ln1 p2p1" x="159" y="340" onclick="hld('svg7',2,1)" onmouseover="mrk('svg7',2,1)" onmouseout="unmrk('svg7',2,1)">appos</text>
+<text class="ln3 ln2 p3p2" x="264" y="340" onclick="hld('svg7',3,2)" onmouseover="mrk('svg7',3,2)" onmouseout="unmrk('svg7',3,2)">flat</text>
+<text class="ln10 ln9 p10p9" x="1095" y="340" onclick="hld('svg7',10,9)" onmouseover="mrk('svg7',10,9)" onmouseout="unmrk('svg7',10,9)">flat</text>
+<text class="ln1 ln0 p1p0" x="20" y="20" onclick="hld('svg7',1,0)" onmouseover="mrk('svg7',1,0)" onmouseout="unmrk('svg7',1,0)">root</text>
+<text class="ln4 ln1 p4p1" x="264" y="300" onclick="hld('svg7',4,1)" onmouseover="mrk('svg7',4,1)" onmouseout="unmrk('svg7',4,1)">punct</text>
+<text class="ln9 ln12 p9p12" x="1188" y="300" onclick="hld('svg7',9,12)" onmouseover="mrk('svg7',9,12)" onmouseout="unmrk('svg7',9,12)">orphan</text>
+<text class="ln5 ln1 p5p1" x="313" y="260" onclick="hld('svg7',5,1)" onmouseover="mrk('svg7',5,1)" onmouseout="unmrk('svg7',5,1)">nummod</text>
+<text class="ln7 ln12 p7p12" x="1066" y="220" onclick="hld('svg7',7,12)" onmouseover="mrk('svg7',7,12)" onmouseout="unmrk('svg7',7,12)">cc</text>
+<text class="ln6 ln1 p6p1" x="364" y="220" onclick="hld('svg7',6,1)" onmouseover="mrk('svg7',6,1)" onmouseout="unmrk('svg7',6,1)">punct</text>
+<text class="ln11 ln1 p11p1" x="650" y="140" onclick="hld('svg7',11,1)" onmouseover="mrk('svg7',11,1)" onmouseout="unmrk('svg7',11,1)">punct</text>
+<text class="ln12 ln1 p12p1" x="725" y="100" onclick="hld('svg7',12,1)" onmouseover="mrk('svg7',12,1)" onmouseout="unmrk('svg7',12,1)">conj</text>
+<text class="ln13 ln1 p13p1" x="748" y="60" onclick="hld('svg7',13,1)" onmouseover="mrk('svg7',13,1)" onmouseout="unmrk('svg7',13,1)">punct</text>
+</g>
+</g>
+<g class="enhanced">
+<g fill="none" stroke="black" stroke-width="1">
+<path class="ee2 ee1 q2q1" d="M187 388 L187 428 C187 348 187 348 159 348 C131 348 131 348 131 428 L131 388" />
+<path class="ee3 ee2 q3q2" d="M299 388 L299 428 C299 348 299 348 264 348 C229 348 229 348 229 428 L229 388" />
+<path class="ee9 ee8 q9q8" d="M1008 388 L1008 428 C1008 348 1008 348 979 348 C950 348 950 348 950 428 L950 388" />
+<path class="ee10 ee9 q10q9" d="M1127 388 L1127 428 C1127 348 1127 348 1095 348 C1064 348 1064 348 1064 428 L1064 388" />
+<path class="ee7 ee8 q7q8" d="M793 388 L793 428 C793 348 793 348 825 348 C857 348 857 348 857 428 L857 388" />
+<path class="ee1 q1q0" d="M20 388 L20 28" />
+<path class="ee4 ee1 q4q1" d="M411 388 L411 388 C411 308 411 308 264 308 C117 308 117 308 117 388 L117 388" />
+<path class="ee12 ee8 q12q8" d="M1361 388 L1361 348 C1361 268 1361 268 1140 268 C919 268 919 268 919 348 L919 388" />
+<path class="ee5 ee1 q5q1" d="M524 388 L524 348 C524 268 524 268 313 268 C103 268 103 268 103 348 L103 388" />
+<path class="ee6 ee1 q6q1" d="M639 388 L639 308 C639 228 639 228 364 228 C89 228 89 228 89 308 L89 388" />
+<path class="ee8 ee1 q8q1" d="M888 388 L888 268 C888 188 888 188 482 188 C76 188 76 188 76 268 L76 388" />
+<path class="ee11 ee1 q11q1" d="M1239 388 L1239 228 C1239 148 1239 148 650 148 C62 148 62 148 62 228 L62 388" />
+<path class="ee13 ee1 q13q1" d="M1463 388 L1463 148 C1463 68 1463 68 748 68 C34 68 34 68 34 148 L34 388" />
+</g>
+<g fill="black" stroke-width="1" stroke="black">
+<path class="ee2 ee1 q2q1" d="M187 388 l3 -14 l-6 0 Z" />
+<path class="ee3 ee2 q3q2" d="M299 388 l3 -14 l-6 0 Z" />
+<path class="ee9 ee8 q9q8" d="M1008 388 l3 -14 l-6 0 Z" />
+<path class="ee10 ee9 q10q9" d="M1127 388 l3 -14 l-6 0 Z" />
+<path class="ee7 ee8 q7q8" d="M793 388 l3 -14 l-6 0 Z" />
+<path class="ee1 ee0 q1q0" d="M20 388 l3 -14 l-6 0 Z" />
+<path class="ee4 ee1 q4q1" d="M411 388 l3 -14 l-6 0 Z" />
+<path class="ee12 ee8 q12q8" d="M1361 388 l3 -14 l-6 0 Z" />
+<path class="ee5 ee1 q5q1" d="M524 388 l3 -14 l-6 0 Z" />
+<path class="ee6 ee1 q6q1" d="M639 388 l3 -14 l-6 0 Z" />
+<path class="ee8 ee1 q8q1" d="M888 388 l3 -14 l-6 0 Z" />
+<path class="ee11 ee1 q11q1" d="M1239 388 l3 -14 l-6 0 Z" />
+<path class="ee13 ee1 q13q1" d="M1463 388 l3 -14 l-6 0 Z" />
+</g>
+<g fill="white" stroke="white" stroke-width="1" opacity="0.9">
+<rect x="131" y="327" width="56" height="19" />
+<rect x="248" y="327" width="32" height="19" />
+<rect x="951" y="327" width="56" height="19" />
+<rect x="1079" y="327" width="32" height="19" />
+<rect x="812" y="327" width="26" height="19" />
+<rect x="0" y="7" width="39" height="19" />
+<rect x="238" y="287" width="52" height="19" />
+<rect x="1102" y="247" width="76" height="19" />
+<rect x="275" y="247" width="76" height="19" />
+<rect x="338" y="207" width="52" height="19" />
+<rect x="450" y="167" width="64" height="19" />
+<rect x="624" y="127" width="52" height="19" />
+<rect x="722" y="47" width="52" height="19" />
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">
+<text class="le2 le1 p2p1" x="159" y="340" onclick="hld('svg7',2,1)" onmouseover="mrk('svg7',2,1)" onmouseout="unmrk('svg7',2,1)">appos</text>
+<text class="le3 le2 p3p2" x="264" y="340" onclick="hld('svg7',3,2)" onmouseover="mrk('svg7',3,2)" onmouseout="unmrk('svg7',3,2)">flat</text>
+<text class="le9 le8 p9p8" x="979" y="340" onclick="hld('svg7',9,8)" onmouseover="mrk('svg7',9,8)" onmouseout="unmrk('svg7',9,8)">appos</text>
+<text class="le10 le9 p10p9" x="1095" y="340" onclick="hld('svg7',10,9)" onmouseover="mrk('svg7',10,9)" onmouseout="unmrk('svg7',10,9)">flat</text>
+<text class="le7 le8 p7p8" x="825" y="340" onclick="hld('svg7',7,8)" onmouseover="mrk('svg7',7,8)" onmouseout="unmrk('svg7',7,8)">cc</text>
+<text class="le1 le0 p1p0" x="20" y="20" onclick="hld('svg7',1,0)" onmouseover="mrk('svg7',1,0)" onmouseout="unmrk('svg7',1,0)">root</text>
+<text class="le4 le1 p4p1" x="264" y="300" onclick="hld('svg7',4,1)" onmouseover="mrk('svg7',4,1)" onmouseout="unmrk('svg7',4,1)">punct</text>
+<text class="le12 le8 p12p8" x="1140" y="260" onclick="hld('svg7',12,8)" onmouseover="mrk('svg7',12,8)" onmouseout="unmrk('svg7',12,8)">nummod</text>
+<text class="le5 le1 p5p1" x="313" y="260" onclick="hld('svg7',5,1)" onmouseover="mrk('svg7',5,1)" onmouseout="unmrk('svg7',5,1)">nummod</text>
+<text class="le6 le1 p6p1" x="364" y="220" onclick="hld('svg7',6,1)" onmouseover="mrk('svg7',6,1)" onmouseout="unmrk('svg7',6,1)">punct</text>
+<text class="le8 le1 p8p1" x="482" y="180" onclick="hld('svg7',8,1)" onmouseover="mrk('svg7',8,1)" onmouseout="unmrk('svg7',8,1)">conj:en</text>
+<text class="le11 le1 p11p1" x="650" y="140" onclick="hld('svg7',11,1)" onmouseover="mrk('svg7',11,1)" onmouseout="unmrk('svg7',11,1)">punct</text>
+<text class="le13 le1 p13p1" x="748" y="60" onclick="hld('svg7',13,1)" onmouseover="mrk('svg7',13,1)" onmouseout="unmrk('svg7',13,1)">punct</text>
+</g>
+</g>
+<g fill="#D0E0FF" stroke="black" stroke-width="1">
+<rect class="q1 en2 en1 en0 en4 en5 en6 en11 en12 en13 ee2 ee1 ee0 ee4 ee5 ee6 ee8 ee11 ee13" x="4" y="388" width="144" height="48" rx="5" ry="5" />
+<rect class="q2 en2 en1 en3 ee2 ee1 ee3" x="156" y="388" width="104" height="48" rx="5" ry="5" />
+<rect class="q3 en3 en2 ee3 ee2" x="268" y="388" width="104" height="48" rx="5" ry="5" />
+<rect class="q4 en4 en1 ee4 ee1" x="380" y="388" width="104" height="48" rx="5" ry="5" />
+<rect class="q5 en5 en1 ee5 ee1" x="492" y="388" width="108" height="48" rx="5" ry="5" />
+<rect class="q6 en6 en1 ee6 ee1" x="608" y="388" width="104" height="48" rx="5" ry="5" />
+<rect class="q7 en7 en12 ee7 ee8" x="720" y="388" width="104" height="48" rx="5" ry="5" />
+<rect class="enhanced q8 ee9 ee8 ee7 ee12 ee1" x="832" y="388" width="144" height="48" rx="5" ry="5" fill="#ffe0e0" />
+<rect class="q9 en10 en9 en12 ee9 ee8 ee10" x="984" y="388" width="104" height="48" rx="5" ry="5" />
+<rect class="q10 en10 en9 ee10 ee9" x="1096" y="388" width="104" height="48" rx="5" ry="5" />
+<rect class="q11 en11 en1 ee11 ee1" x="1208" y="388" width="104" height="48" rx="5" ry="5" />
+<rect class="q12 en9 en12 en7 en1 ee12 ee8" x="1320" y="388" width="104" height="48" rx="5" ry="5" />
+<rect class="q13 en13 en1 ee13 ee1" x="1432" y="388" width="104" height="48" rx="5" ry="5" />
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">
+<text x="76" y="407">NOUN</text>
+<text x="208" y="407">PROPN</text>
+<text x="320" y="407">PROPN</text>
+<text x="432" y="407">PUNCT</text>
+<text x="546" y="407">NUM</text>
+<text x="660" y="407">PUNCT</text>
+<text x="772" y="407">CCONJ</text>
+<text class="enhanced" x="904" y="407">NOUN</text>
+<text x="1036" y="407">PROPN</text>
+<text x="1148" y="407">PROPN</text>
+<text x="1260" y="407">PUNCT</text>
+<text x="1372" y="407">NUM</text>
+<text x="1484" y="407">PUNCT</text>
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle" font-style="italic">
+<text x="76" y="427">Partijbestuurslid</text>
+<text x="208" y="427">Vlaams</text>
+<text x="320" y="427">Blok</text>
+<text x="432" y="427">(</text>
+<text x="546" y="427">1987-2004</text>
+<text x="660" y="427">)</text>
+<text x="772" y="427">en</text>
+<text class="enhanced" x="904" y="427">Partijbestuurslid</text>
+<text x="1036" y="427">Vlaams</text>
+<text x="1148" y="427">Belang</text>
+<text x="1260" y="427">(</text>
+<text x="1372" y="427">2004-...</text>
+<text x="1484" y="427">)</text>
+</g>
+<g opacity="0" stroke-width="1">
+<rect x="4" y="388" width="144" height="48" rx="5" ry="5" onclick="hold('svg7',1)" onmouseover="mark('svg7',1)" onmouseout="unmark('svg7',1)" />
+<rect x="156" y="388" width="104" height="48" rx="5" ry="5" onclick="hold('svg7',2)" onmouseover="mark('svg7',2)" onmouseout="unmark('svg7',2)" />
+<rect x="268" y="388" width="104" height="48" rx="5" ry="5" onclick="hold('svg7',3)" onmouseover="mark('svg7',3)" onmouseout="unmark('svg7',3)" />
+<rect x="380" y="388" width="104" height="48" rx="5" ry="5" onclick="hold('svg7',4)" onmouseover="mark('svg7',4)" onmouseout="unmark('svg7',4)" />
+<rect x="492" y="388" width="108" height="48" rx="5" ry="5" onclick="hold('svg7',5)" onmouseover="mark('svg7',5)" onmouseout="unmark('svg7',5)" />
+<rect x="608" y="388" width="104" height="48" rx="5" ry="5" onclick="hold('svg7',6)" onmouseover="mark('svg7',6)" onmouseout="unmark('svg7',6)" />
+<rect x="720" y="388" width="104" height="48" rx="5" ry="5" onclick="hold('svg7',7)" onmouseover="mark('svg7',7)" onmouseout="unmark('svg7',7)" />
+<rect class="enhanced" x="832" y="388" width="144" height="48" rx="5" ry="5" onclick="hold('svg7',8)" onmouseover="mark('svg7',8)" onmouseout="unmark('svg7',8)" />
+<rect x="984" y="388" width="104" height="48" rx="5" ry="5" onclick="hold('svg7',9)" onmouseover="mark('svg7',9)" onmouseout="unmark('svg7',9)" />
+<rect x="1096" y="388" width="104" height="48" rx="5" ry="5" onclick="hold('svg7',10)" onmouseover="mark('svg7',10)" onmouseout="unmark('svg7',10)" />
+<rect x="1208" y="388" width="104" height="48" rx="5" ry="5" onclick="hold('svg7',11)" onmouseover="mark('svg7',11)" onmouseout="unmark('svg7',11)" />
+<rect x="1320" y="388" width="104" height="48" rx="5" ry="5" onclick="hold('svg7',12)" onmouseover="mark('svg7',12)" onmouseout="unmark('svg7',12)" />
+<rect x="1432" y="388" width="104" height="48" rx="5" ry="5" onclick="hold('svg7',13)" onmouseover="mark('svg7',13)" onmouseout="unmark('svg7',13)" />
+</g>
+<g fill="#D0E0FF" stroke="black" stroke-width="1">
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" font-style="italic" text-anchor="middle">
+</g>
+
+</svg>
+</div>
+<script type="text/javascript">
+tts['svg7'] = [
+['1', 'Partijbestuurslid','NOUN','Gender: Neut, Number: Sing','partijbestuurslid','N|soort|ev|basis|onz|stan'],
+['2', 'Vlaams','PROPN','','Vlaams','SPEC|deeleigen'],
+['3', 'Blok','PROPN','','Blok','SPEC|deeleigen'],
+['4', '(','PUNCT','','(','LET'],
+['5', '1987-2004','NUM','','1987','TW|hoofd|vrij'],
+['6', ')','PUNCT','',')','LET'],
+['7', 'en','CCONJ','','en','VG|neven'],
+['7.1', 'Partijbestuurslid','NOUN','Gender: Neut, Number: Sing','partijbestuurslid','N|soort|ev|basis|onz|stan'],
+['8', 'Vlaams','PROPN','','Vlaams','SPEC|deeleigen'],
+['9', 'Belang','PROPN','','Belang','SPEC|deeleigen'],
+['10', '(','PUNCT','','(','LET'],
+['11', '2004-...','NUM','','2004','TW|hoofd|vrij'],
+['12', ')','PUNCT','',')','LET']
+];toggle('svg7',false);
+</script>
+<div class="udcontrol">
+<input type="radio" id="btnbsvg7" name="btnsvg7" onclick="toggle('svg7',false)" class="rb" checked /><label for="btnbsvg7">Basic</label>
+<input type="radio" id="btnesvg7" name="btnsvg7" onclick="toggle('svg7',true)" class="re" /><label for="btnesvg7">Enhanced</label>
+</div>
+<div class="comments"># sent_id = ikzie
+# text = Ik zie hem haar helpen
+</div>
+<div class="overflow">
+<svg id="svg8" width="560" height="240">
+<g class="normal" style="visibility:hidden">
+<g fill="none" stroke="black" stroke-width="1">
+<path class="en1 en2 q1q2" d="M77 188 L77 228 C77 148 77 148 106 148 C136 148 136 148 136 228 L136 188" />
+<path class="en3 en2 q3q2" d="M259 188 L259 228 C259 148 259 148 229 148 C199 148 199 148 199 228 L199 188" />
+<path class="en4 en5 q4q5" d="M413 188 L413 228 C413 148 413 148 444 148 C476 148 476 148 476 228 L476 188" />
+<path class="en2 q2q0" d="M157 188 L157 28" />
+<path class="en5 en2 q5q2" d="M532 188 L532 148 C532 68 532 68 355 68 C178 68 178 68 178 148 L178 188" />
+</g>
+<g fill="black" stroke-width="1" stroke="black">
+<path class="en1 en2 q1q2" d="M77 188 l3 -14 l-6 0 Z" />
+<path class="en3 en2 q3q2" d="M259 188 l3 -14 l-6 0 Z" />
+<path class="en4 en5 q4q5" d="M413 188 l3 -14 l-6 0 Z" />
+<path class="en2 en0 q2q0" d="M157 188 l3 -14 l-6 0 Z" />
+<path class="en5 en2 q5q2" d="M532 188 l3 -14 l-6 0 Z" />
+</g>
+<g fill="white" stroke="white" stroke-width="1" opacity="0.9">
+<rect x="81" y="127" width="51" height="19" />
+<rect x="213" y="127" width="32" height="19" />
+<rect x="428" y="127" width="32" height="19" />
+<rect x="137" y="7" width="39" height="19" />
+<rect x="325" y="47" width="60" height="19" />
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">
+<text class="ln1 ln2 p1p2" x="106" y="140" onclick="hld('svg8',1,2)" onmouseover="mrk('svg8',1,2)" onmouseout="unmrk('svg8',1,2)">nsubj</text>
+<text class="ln3 ln2 p3p2" x="229" y="140" onclick="hld('svg8',3,2)" onmouseover="mrk('svg8',3,2)" onmouseout="unmrk('svg8',3,2)">obj</text>
+<text class="ln4 ln5 p4p5" x="444" y="140" onclick="hld('svg8',4,5)" onmouseover="mrk('svg8',4,5)" onmouseout="unmrk('svg8',4,5)">obj</text>
+<text class="ln2 ln0 p2p0" x="157" y="20" onclick="hld('svg8',2,0)" onmouseover="mrk('svg8',2,0)" onmouseout="unmrk('svg8',2,0)">root</text>
+<text class="ln5 ln2 p5p2" x="355" y="60" onclick="hld('svg8',5,2)" onmouseover="mrk('svg8',5,2)" onmouseout="unmrk('svg8',5,2)">xcomp</text>
+</g>
+</g>
+<g class="enhanced">
+<g fill="none" stroke="black" stroke-width="1">
+<path class="ee1 ee2 q1q2" d="M77 188 L77 228 C77 148 77 148 106 148 C136 148 136 148 136 228 L136 188" />
+<path class="ee3 ee2 q3q2" d="M259 188 L259 228 C259 148 259 148 229 148 C199 148 199 148 199 228 L199 188" />
+<path class="ee4 ee5 q4q5" d="M413 188 L413 228 C413 148 413 148 444 148 C476 148 476 148 476 228 L476 188" />
+<path class="ee2 q2q0" d="M157 188 L157 28" />
+<path class="ee3 ee5 q3q5" d="M301 188 L301 188 C301 108 301 108 402 108 C504 108 504 108 504 188 L504 188" />
+<path class="ee5 ee2 q5q2" d="M532 188 L532 148 C532 68 532 68 355 68 C178 68 178 68 178 148 L178 188" />
+</g>
+<g fill="black" stroke-width="1" stroke="black">
+<path class="ee1 ee2 q1q2" d="M77 188 l3 -14 l-6 0 Z" />
+<path class="ee3 ee2 q3q2" d="M259 188 l3 -14 l-6 0 Z" />
+<path class="ee4 ee5 q4q5" d="M413 188 l3 -14 l-6 0 Z" />
+<path class="ee2 ee0 q2q0" d="M157 188 l3 -14 l-6 0 Z" />
+<path class="ee3 ee5 q3q5" d="M301 188 l3 -14 l-6 0 Z" />
+<path class="ee5 ee2 q5q2" d="M532 188 l3 -14 l-6 0 Z" />
+</g>
+<g fill="white" stroke="white" stroke-width="1" opacity="0.9">
+<rect x="81" y="127" width="51" height="19" />
+<rect x="213" y="127" width="32" height="19" />
+<rect x="428" y="127" width="32" height="19" />
+<rect x="137" y="7" width="39" height="19" />
+<rect x="354" y="87" width="97" height="19" />
+<rect x="325" y="47" width="60" height="19" />
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">
+<text class="le1 le2 p1p2" x="106" y="140" onclick="hld('svg8',1,2)" onmouseover="mrk('svg8',1,2)" onmouseout="unmrk('svg8',1,2)">nsubj</text>
+<text class="le3 le2 p3p2" x="229" y="140" onclick="hld('svg8',3,2)" onmouseover="mrk('svg8',3,2)" onmouseout="unmrk('svg8',3,2)">obj</text>
+<text class="le4 le5 p4p5" x="444" y="140" onclick="hld('svg8',4,5)" onmouseover="mrk('svg8',4,5)" onmouseout="unmrk('svg8',4,5)">obj</text>
+<text class="le2 le0 p2p0" x="157" y="20" onclick="hld('svg8',2,0)" onmouseover="mrk('svg8',2,0)" onmouseout="unmrk('svg8',2,0)">root</text>
+<text class="le3 le5 p3p5" x="402" y="100" onclick="hld('svg8',3,5)" onmouseover="mrk('svg8',3,5)" onmouseout="unmrk('svg8',3,5)">nsubj:xsubj</text>
+<text class="le5 le2 p5p2" x="355" y="60" onclick="hld('svg8',5,2)" onmouseover="mrk('svg8',5,2)" onmouseout="unmrk('svg8',5,2)">xcomp</text>
+</g>
+</g>
+<g fill="#D0E0FF" stroke="black" stroke-width="1">
+<rect class="q1 en1 en2 ee1 ee2" x="4" y="188" width="104" height="48" rx="5" ry="5" />
+<rect class="q2 en1 en2 en3 en0 en5 ee1 ee2 ee3 ee0 ee5" x="116" y="188" width="104" height="48" rx="5" ry="5" />
+<rect class="q3 en3 en2 ee3 ee2 ee5" x="228" y="188" width="104" height="48" rx="5" ry="5" />
+<rect class="q4 en4 en5 ee4 ee5" x="340" y="188" width="104" height="48" rx="5" ry="5" />
+<rect class="q5 en4 en5 en2 ee4 ee5 ee3 ee2" x="452" y="188" width="104" height="48" rx="5" ry="5" />
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">
+<text x="56" y="207">PRON</text>
+<text x="168" y="207">VERB</text>
+<text x="280" y="207">PRON</text>
+<text x="392" y="207">PRON</text>
+<text x="504" y="207">VERB</text>
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle" font-style="italic">
+<text x="56" y="227">Ik</text>
+<text x="168" y="227">zie</text>
+<text x="280" y="227">hem</text>
+<text x="392" y="227">haar</text>
+<text x="504" y="227">helpen</text>
+</g>
+<g opacity="0" stroke-width="1">
+<rect x="4" y="188" width="104" height="48" rx="5" ry="5" onclick="hold('svg8',1)" onmouseover="mark('svg8',1)" onmouseout="unmark('svg8',1)" />
+<rect x="116" y="188" width="104" height="48" rx="5" ry="5" onclick="hold('svg8',2)" onmouseover="mark('svg8',2)" onmouseout="unmark('svg8',2)" />
+<rect x="228" y="188" width="104" height="48" rx="5" ry="5" onclick="hold('svg8',3)" onmouseover="mark('svg8',3)" onmouseout="unmark('svg8',3)" />
+<rect x="340" y="188" width="104" height="48" rx="5" ry="5" onclick="hold('svg8',4)" onmouseover="mark('svg8',4)" onmouseout="unmark('svg8',4)" />
+<rect x="452" y="188" width="104" height="48" rx="5" ry="5" onclick="hold('svg8',5)" onmouseover="mark('svg8',5)" onmouseout="unmark('svg8',5)" />
+</g>
+<g fill="#D0E0FF" stroke="black" stroke-width="1">
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" font-style="italic" text-anchor="middle">
+</g>
+
+</svg>
+</div>
+<script type="text/javascript">
+tts['svg8'] = [
+['1', 'Ik','PRON','Case: Nom, Person: 1, PronType: Prs','ik','VNW|pers|pron|nomin|vol|1|ev'],
+['2', 'zie','VERB','Number: Sing, Tense: Pres, VerbForm: Fin','zien','WW|pv|tgw|ev'],
+['3', 'hem','PRON','Case: Acc, Person: 3, PronType: Prs','hem','VNW|pers|pron|obl|vol|3|ev|masc'],
+['4', 'haar','PRON','Case: Acc, Person: 3, PronType: Prs','haar','VNW|pers|pron|obl|vol|3|getal|fem'],
+['5', 'helpen','VERB','VerbForm: Inf','helpen','WW|inf|vrij|zonder']
+];toggle('svg8',false);
+</script>
+<div class="udcontrol">
+<input type="radio" id="btnbsvg8" name="btnsvg8" onclick="toggle('svg8',false)" class="rb" checked /><label for="btnbsvg8">Basic</label>
+<input type="radio" id="btnesvg8" name="btnsvg8" onclick="toggle('svg8',true)" class="re" /><label for="btnesvg8">Enhanced</label>
+</div>
+<div class="comments"># sent_id = ikga
+# text = Ik ga fietsen .
+</div>
+<div class="overflow">
+<svg id="svg9" width="448" height="200">
+<g class="normal" style="visibility:hidden">
+<g fill="none" stroke="black" stroke-width="1">
+<path class="en2 en3 q2q3" d="M189 148 L189 188 C189 108 189 108 218 108 C248 108 248 108 248 188 L248 148" />
+<path class="en4 en3 q4q3" d="M371 148 L371 188 C371 108 371 108 341 108 C311 108 311 108 311 188 L311 148" />
+<path class="en1 en3 q1q3" d="M77 148 L77 148 C77 68 77 68 173 68 C269 68 269 68 269 148 L269 148" />
+<path class="en3 q3q0" d="M290 148 L290 28" />
+</g>
+<g fill="black" stroke-width="1" stroke="black">
+<path class="en2 en3 q2q3" d="M189 148 l3 -14 l-6 0 Z" />
+<path class="en4 en3 q4q3" d="M371 148 l3 -14 l-6 0 Z" />
+<path class="en1 en3 q1q3" d="M77 148 l3 -14 l-6 0 Z" />
+<path class="en3 en0 q3q0" d="M290 148 l3 -14 l-6 0 Z" />
+</g>
+<g fill="white" stroke="white" stroke-width="1" opacity="0.9">
+<rect x="200" y="87" width="36" height="19" />
+<rect x="315" y="87" width="52" height="19" />
+<rect x="147" y="47" width="51" height="19" />
+<rect x="270" y="7" width="39" height="19" />
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">
+<text class="ln2 ln3 p2p3" x="218" y="100" onclick="hld('svg9',2,3)" onmouseover="mrk('svg9',2,3)" onmouseout="unmrk('svg9',2,3)">aux</text>
+<text class="ln4 ln3 p4p3" x="341" y="100" onclick="hld('svg9',4,3)" onmouseover="mrk('svg9',4,3)" onmouseout="unmrk('svg9',4,3)">punct</text>
+<text class="ln1 ln3 p1p3" x="173" y="60" onclick="hld('svg9',1,3)" onmouseover="mrk('svg9',1,3)" onmouseout="unmrk('svg9',1,3)">nsubj</text>
+<text class="ln3 ln0 p3p0" x="290" y="20" onclick="hld('svg9',3,0)" onmouseover="mrk('svg9',3,0)" onmouseout="unmrk('svg9',3,0)">root</text>
+</g>
+</g>
+<g class="enhanced">
+<g fill="none" stroke="black" stroke-width="1">
+<path class="ee2 ee3 q2q3" d="M189 148 L189 188 C189 108 189 108 218 108 C248 108 248 108 248 188 L248 148" />
+<path class="ee4 ee3 q4q3" d="M371 148 L371 188 C371 108 371 108 341 108 C311 108 311 108 311 188 L311 148" />
+<path class="ee1 ee3 q1q3" d="M77 148 L77 148 C77 68 77 68 173 68 C269 68 269 68 269 148 L269 148" />
+<path class="ee3 q3q0" d="M290 148 L290 28" />
+</g>
+<g fill="black" stroke-width="1" stroke="black">
+<path class="ee2 ee3 q2q3" d="M189 148 l3 -14 l-6 0 Z" />
+<path class="ee4 ee3 q4q3" d="M371 148 l3 -14 l-6 0 Z" />
+<path class="ee1 ee3 q1q3" d="M77 148 l3 -14 l-6 0 Z" />
+<path class="ee3 ee0 q3q0" d="M290 148 l3 -14 l-6 0 Z" />
+</g>
+<g fill="white" stroke="white" stroke-width="1" opacity="0.9">
+<rect x="200" y="87" width="36" height="19" />
+<rect x="315" y="87" width="52" height="19" />
+<rect x="147" y="47" width="51" height="19" />
+<rect x="270" y="7" width="39" height="19" />
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">
+<text class="le2 le3 p2p3" x="218" y="100" onclick="hld('svg9',2,3)" onmouseover="mrk('svg9',2,3)" onmouseout="unmrk('svg9',2,3)">aux</text>
+<text class="le4 le3 p4p3" x="341" y="100" onclick="hld('svg9',4,3)" onmouseover="mrk('svg9',4,3)" onmouseout="unmrk('svg9',4,3)">punct</text>
+<text class="le1 le3 p1p3" x="173" y="60" onclick="hld('svg9',1,3)" onmouseover="mrk('svg9',1,3)" onmouseout="unmrk('svg9',1,3)">nsubj</text>
+<text class="le3 le0 p3p0" x="290" y="20" onclick="hld('svg9',3,0)" onmouseover="mrk('svg9',3,0)" onmouseout="unmrk('svg9',3,0)">root</text>
+</g>
+</g>
+<g fill="#D0E0FF" stroke="black" stroke-width="1">
+<rect class="q1 en1 en3 ee1 ee3" x="4" y="148" width="104" height="48" rx="5" ry="5" />
+<rect class="q2 en2 en3 ee2 ee3" x="116" y="148" width="104" height="48" rx="5" ry="5" />
+<rect class="q3 en2 en3 en4 en1 en0 ee2 ee3 ee4 ee1 ee0" x="228" y="148" width="104" height="48" rx="5" ry="5" />
+<rect class="q4 en4 en3 ee4 ee3" x="340" y="148" width="104" height="48" rx="5" ry="5" />
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">
+<text x="56" y="167">PRON</text>
+<text x="168" y="167">AUX</text>
+<text x="280" y="167">VERB</text>
+<text x="392" y="167">PUNCT</text>
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle" font-style="italic">
+<text x="56" y="187">Ik</text>
+<text x="168" y="187">ga</text>
+<text x="280" y="187">fietsen</text>
+<text x="392" y="187">.</text>
+</g>
+<g opacity="0" stroke-width="1">
+<rect x="4" y="148" width="104" height="48" rx="5" ry="5" onclick="hold('svg9',1)" onmouseover="mark('svg9',1)" onmouseout="unmark('svg9',1)" />
+<rect x="116" y="148" width="104" height="48" rx="5" ry="5" onclick="hold('svg9',2)" onmouseover="mark('svg9',2)" onmouseout="unmark('svg9',2)" />
+<rect x="228" y="148" width="104" height="48" rx="5" ry="5" onclick="hold('svg9',3)" onmouseover="mark('svg9',3)" onmouseout="unmark('svg9',3)" />
+<rect x="340" y="148" width="104" height="48" rx="5" ry="5" onclick="hold('svg9',4)" onmouseover="mark('svg9',4)" onmouseout="unmark('svg9',4)" />
+</g>
+<g fill="#D0E0FF" stroke="black" stroke-width="1">
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" font-style="italic" text-anchor="middle">
+</g>
+
+</svg>
+</div>
+<script type="text/javascript">
+tts['svg9'] = [
+['1', 'Ik','PRON','Case: Nom, Person: 1, PronType: Prs','ik','VNW|pers|pron|nomin|vol|1|ev'],
+['2', 'ga','AUX','Number: Sing, Tense: Pres, VerbForm: Fin','gaan','WW|pv|tgw|ev'],
+['3', 'fietsen','VERB','VerbForm: Inf','fietsen','WW|inf|vrij|zonder'],
+['4', '.','PUNCT','','.','LET']
+];toggle('svg9',false);
+</script>
+<div class="udcontrol">
+<input type="radio" id="btnbsvg9" name="btnsvg9" onclick="toggle('svg9',false)" class="rb" checked /><label for="btnbsvg9">Basic</label>
+<input type="radio" id="btnesvg9" name="btnsvg9" onclick="toggle('svg9',true)" class="re" /><label for="btnesvg9">Enhanced</label>
+</div>
+<div class="comments"># sent_id = ikziedat
+# text = Ik zie dat zij hem helpt om beren vis te leren eten .
+</div>
+<div class="overflow">
+<svg id="svg10" width="1456" height="400">
+<g class="normal" style="visibility:hidden">
+<g fill="none" stroke="black" stroke-width="1">
+<path class="en10 en11 q10q11" d="M1085 348 L1085 388 C1085 308 1085 308 1114 308 C1144 308 1144 308 1144 388 L1144 348" />
+<path class="en1 en2 q1q2" d="M77 348 L77 388 C77 308 77 308 106 308 C136 308 136 308 136 388 L136 348" />
+<path class="en7 en8 q7q8" d="M749 348 L749 388 C749 308 749 308 784 308 C819 308 819 308 819 388 L819 348" />
+<path class="en5 en6 q5q6" d="M532 348 L532 388 C532 308 532 308 557 308 C582 308 582 308 582 388 L582 348" />
+<path class="en12 en11 q12q11" d="M1256 348 L1256 388 C1256 308 1256 308 1231 308 C1207 308 1207 308 1207 388 L1207 348" />
+<path class="en4 en6 q4q6" d="M413 348 L413 348 C413 268 413 268 506 268 C599 268 599 268 599 348 L599 348" />
+<path class="en2 q2q0" d="M157 348 L157 28" />
+<path class="en9 en12 q9q12" d="M973 348 L973 348 C973 268 973 268 1125 268 C1277 268 1277 268 1277 348 L1277 348" />
+<path class="en3 en6 q3q6" d="M301 348 L301 308 C301 228 301 228 458 228 C616 228 616 228 616 308 L616 348" />
+<path class="en6 en2 q6q2" d="M632 348 L632 268 C632 188 632 188 415 188 C199 188 199 188 199 268 L199 348" />
+<path class="en8 en12 q8q12" d="M861 348 L861 308 C861 228 861 228 1079 228 C1298 228 1298 228 1298 308 L1298 348" />
+<path class="en11 en6 q11q6" d="M1165 348 L1165 268 C1165 188 1165 188 907 188 C649 188 649 188 649 268 L649 348" />
+<path class="en13 en2 q13q2" d="M1379 348 L1379 148 C1379 68 1379 68 778 68 C178 68 178 68 178 148 L178 348" />
+</g>
+<g fill="black" stroke-width="1" stroke="black">
+<path class="en10 en11 q10q11" d="M1085 348 l3 -14 l-6 0 Z" />
+<path class="en1 en2 q1q2" d="M77 348 l3 -14 l-6 0 Z" />
+<path class="en7 en8 q7q8" d="M749 348 l3 -14 l-6 0 Z" />
+<path class="en5 en6 q5q6" d="M532 348 l3 -14 l-6 0 Z" />
+<path class="en12 en11 q12q11" d="M1256 348 l3 -14 l-6 0 Z" />
+<path class="en4 en6 q4q6" d="M413 348 l3 -14 l-6 0 Z" />
+<path class="en2 en0 q2q0" d="M157 348 l3 -14 l-6 0 Z" />
+<path class="en9 en12 q9q12" d="M973 348 l3 -14 l-6 0 Z" />
+<path class="en3 en6 q3q6" d="M301 348 l3 -14 l-6 0 Z" />
+<path class="en6 en2 q6q2" d="M632 348 l3 -14 l-6 0 Z" />
+<path class="en8 en12 q8q12" d="M861 348 l3 -14 l-6 0 Z" />
+<path class="en11 en6 q11q6" d="M1165 348 l3 -14 l-6 0 Z" />
+<path class="en13 en2 q13q2" d="M1379 348 l3 -14 l-6 0 Z" />
+</g>
+<g fill="white" stroke="white" stroke-width="1" opacity="0.9">
+<rect x="1091" y="287" width="47" height="19" />
+<rect x="81" y="287" width="51" height="19" />
+<rect x="762" y="287" width="44" height="19" />
+<rect x="541" y="287" width="32" height="19" />
+<rect x="1201" y="287" width="60" height="19" />
+<rect x="480" y="247" width="51" height="19" />
+<rect x="137" y="7" width="39" height="19" />
+<rect x="1109" y="247" width="32" height="19" />
+<rect x="435" y="207" width="47" height="19" />
+<rect x="385" y="167" width="60" height="19" />
+<rect x="1063" y="207" width="32" height="19" />
+<rect x="877" y="167" width="60" height="19" />
+<rect x="752" y="47" width="52" height="19" />
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">
+<text class="ln10 ln11 p10p11" x="1114" y="300" onclick="hld('svg10',10,11)" onmouseover="mrk('svg10',10,11)" onmouseout="unmrk('svg10',10,11)">mark</text>
+<text class="ln1 ln2 p1p2" x="106" y="300" onclick="hld('svg10',1,2)" onmouseover="mrk('svg10',1,2)" onmouseout="unmrk('svg10',1,2)">nsubj</text>
+<text class="ln7 ln8 p7p8" x="784" y="300" onclick="hld('svg10',7,8)" onmouseover="mrk('svg10',7,8)" onmouseout="unmrk('svg10',7,8)">case</text>
+<text class="ln5 ln6 p5p6" x="557" y="300" onclick="hld('svg10',5,6)" onmouseover="mrk('svg10',5,6)" onmouseout="unmrk('svg10',5,6)">obj</text>
+<text class="ln12 ln11 p12p11" x="1231" y="300" onclick="hld('svg10',12,11)" onmouseover="mrk('svg10',12,11)" onmouseout="unmrk('svg10',12,11)">xcomp</text>
+<text class="ln4 ln6 p4p6" x="506" y="260" onclick="hld('svg10',4,6)" onmouseover="mrk('svg10',4,6)" onmouseout="unmrk('svg10',4,6)">nsubj</text>
+<text class="ln2 ln0 p2p0" x="157" y="20" onclick="hld('svg10',2,0)" onmouseover="mrk('svg10',2,0)" onmouseout="unmrk('svg10',2,0)">root</text>
+<text class="ln9 ln12 p9p12" x="1125" y="260" onclick="hld('svg10',9,12)" onmouseover="mrk('svg10',9,12)" onmouseout="unmrk('svg10',9,12)">obj</text>
+<text class="ln3 ln6 p3p6" x="458" y="220" onclick="hld('svg10',3,6)" onmouseover="mrk('svg10',3,6)" onmouseout="unmrk('svg10',3,6)">mark</text>
+<text class="ln6 ln2 p6p2" x="415" y="180" onclick="hld('svg10',6,2)" onmouseover="mrk('svg10',6,2)" onmouseout="unmrk('svg10',6,2)">ccomp</text>
+<text class="ln8 ln12 p8p12" x="1079" y="220" onclick="hld('svg10',8,12)" onmouseover="mrk('svg10',8,12)" onmouseout="unmrk('svg10',8,12)">obl</text>
+<text class="ln11 ln6 p11p6" x="907" y="180" onclick="hld('svg10',11,6)" onmouseover="mrk('svg10',11,6)" onmouseout="unmrk('svg10',11,6)">xcomp</text>
+<text class="ln13 ln2 p13p2" x="778" y="60" onclick="hld('svg10',13,2)" onmouseover="mrk('svg10',13,2)" onmouseout="unmrk('svg10',13,2)">punct</text>
+</g>
+</g>
+<g class="enhanced">
+<g fill="none" stroke="black" stroke-width="1">
+<path class="ee10 ee11 q10q11" d="M1085 348 L1085 388 C1085 308 1085 308 1114 308 C1144 308 1144 308 1144 388 L1144 348" />
+<path class="ee1 ee2 q1q2" d="M77 348 L77 388 C77 308 77 308 106 308 C136 308 136 308 136 388 L136 348" />
+<path class="ee7 ee8 q7q8" d="M749 348 L749 388 C749 308 749 308 784 308 C819 308 819 308 819 388 L819 348" />
+<path class="ee5 ee6 q5q6" d="M532 348 L532 388 C532 308 532 308 557 308 C582 308 582 308 582 388 L582 348" />
+<path class="ee12 ee11 q12q11" d="M1256 348 L1256 388 C1256 308 1256 308 1231 308 C1207 308 1207 308 1207 388 L1207 348" />
+<path class="ee4 ee6 q4q6" d="M413 348 L413 348 C413 268 413 268 506 268 C599 268 599 268 599 348 L599 348" />
+<path class="ee2 q2q0" d="M157 348 L157 28" />
+<path class="ee9 ee12 q9q12" d="M973 348 L973 348 C973 268 973 268 1125 268 C1277 268 1277 268 1277 348 L1277 348" />
+<path class="ee3 ee6 q3q6" d="M301 348 L301 308 C301 228 301 228 458 228 C616 228 616 228 616 308 L616 348" />
+<path class="ee6 ee2 q6q2" d="M632 348 L632 268 C632 188 632 188 415 188 C199 188 199 188 199 268 L199 348" />
+<path class="ee8 ee12 q8q12" d="M861 348 L861 308 C861 228 861 228 1079 228 C1298 228 1298 228 1298 308 L1298 348" />
+<path class="ee11 ee6 q11q6" d="M1165 348 L1165 268 C1165 188 1165 188 907 188 C649 188 649 188 649 268 L649 348" />
+<path class="ee5 ee11 q5q11" d="M504 348 L504 228 C504 148 504 148 845 148 C1186 148 1186 148 1186 228 L1186 348" />
+<path class="ee5 ee12 q5q12" d="M476 348 L476 188 C476 108 476 108 897 108 C1319 108 1319 108 1319 188 L1319 348" />
+<path class="ee13 ee2 q13q2" d="M1379 348 L1379 148 C1379 68 1379 68 778 68 C178 68 178 68 178 148 L178 348" />
+</g>
+<g fill="black" stroke-width="1" stroke="black">
+<path class="ee10 ee11 q10q11" d="M1085 348 l3 -14 l-6 0 Z" />
+<path class="ee1 ee2 q1q2" d="M77 348 l3 -14 l-6 0 Z" />
+<path class="ee7 ee8 q7q8" d="M749 348 l3 -14 l-6 0 Z" />
+<path class="ee5 ee6 q5q6" d="M532 348 l3 -14 l-6 0 Z" />
+<path class="ee12 ee11 q12q11" d="M1256 348 l3 -14 l-6 0 Z" />
+<path class="ee4 ee6 q4q6" d="M413 348 l3 -14 l-6 0 Z" />
+<path class="ee2 ee0 q2q0" d="M157 348 l3 -14 l-6 0 Z" />
+<path class="ee9 ee12 q9q12" d="M973 348 l3 -14 l-6 0 Z" />
+<path class="ee3 ee6 q3q6" d="M301 348 l3 -14 l-6 0 Z" />
+<path class="ee6 ee2 q6q2" d="M632 348 l3 -14 l-6 0 Z" />
+<path class="ee8 ee12 q8q12" d="M861 348 l3 -14 l-6 0 Z" />
+<path class="ee11 ee6 q11q6" d="M1165 348 l3 -14 l-6 0 Z" />
+<path class="ee5 ee11 q5q11" d="M504 348 l3 -14 l-6 0 Z" />
+<path class="ee5 ee12 q5q12" d="M476 348 l3 -14 l-6 0 Z" />
+<path class="ee13 ee2 q13q2" d="M1379 348 l3 -14 l-6 0 Z" />
+</g>
+<g fill="white" stroke="white" stroke-width="1" opacity="0.9">
+<rect x="1091" y="287" width="47" height="19" />
+<rect x="81" y="287" width="51" height="19" />
+<rect x="762" y="287" width="44" height="19" />
+<rect x="541" y="287" width="32" height="19" />
+<rect x="1201" y="287" width="60" height="19" />
+<rect x="480" y="247" width="51" height="19" />
+<rect x="137" y="7" width="39" height="19" />
+<rect x="1109" y="247" width="32" height="19" />
+<rect x="435" y="207" width="47" height="19" />
+<rect x="385" y="167" width="60" height="19" />
+<rect x="1049" y="207" width="60" height="19" />
+<rect x="877" y="167" width="60" height="19" />
+<rect x="796" y="127" width="97" height="19" />
+<rect x="849" y="87" width="97" height="19" />
+<rect x="752" y="47" width="52" height="19" />
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">
+<text class="le10 le11 p10p11" x="1114" y="300" onclick="hld('svg10',10,11)" onmouseover="mrk('svg10',10,11)" onmouseout="unmrk('svg10',10,11)">mark</text>
+<text class="le1 le2 p1p2" x="106" y="300" onclick="hld('svg10',1,2)" onmouseover="mrk('svg10',1,2)" onmouseout="unmrk('svg10',1,2)">nsubj</text>
+<text class="le7 le8 p7p8" x="784" y="300" onclick="hld('svg10',7,8)" onmouseover="mrk('svg10',7,8)" onmouseout="unmrk('svg10',7,8)">case</text>
+<text class="le5 le6 p5p6" x="557" y="300" onclick="hld('svg10',5,6)" onmouseover="mrk('svg10',5,6)" onmouseout="unmrk('svg10',5,6)">obj</text>
+<text class="le12 le11 p12p11" x="1231" y="300" onclick="hld('svg10',12,11)" onmouseover="mrk('svg10',12,11)" onmouseout="unmrk('svg10',12,11)">xcomp</text>
+<text class="le4 le6 p4p6" x="506" y="260" onclick="hld('svg10',4,6)" onmouseover="mrk('svg10',4,6)" onmouseout="unmrk('svg10',4,6)">nsubj</text>
+<text class="le2 le0 p2p0" x="157" y="20" onclick="hld('svg10',2,0)" onmouseover="mrk('svg10',2,0)" onmouseout="unmrk('svg10',2,0)">root</text>
+<text class="le9 le12 p9p12" x="1125" y="260" onclick="hld('svg10',9,12)" onmouseover="mrk('svg10',9,12)" onmouseout="unmrk('svg10',9,12)">obj</text>
+<text class="le3 le6 p3p6" x="458" y="220" onclick="hld('svg10',3,6)" onmouseover="mrk('svg10',3,6)" onmouseout="unmrk('svg10',3,6)">mark</text>
+<text class="le6 le2 p6p2" x="415" y="180" onclick="hld('svg10',6,2)" onmouseover="mrk('svg10',6,2)" onmouseout="unmrk('svg10',6,2)">ccomp</text>
+<text class="le8 le12 p8p12" x="1079" y="220" onclick="hld('svg10',8,12)" onmouseover="mrk('svg10',8,12)" onmouseout="unmrk('svg10',8,12)">obl:om</text>
+<text class="le11 le6 p11p6" x="907" y="180" onclick="hld('svg10',11,6)" onmouseover="mrk('svg10',11,6)" onmouseout="unmrk('svg10',11,6)">xcomp</text>
+<text class="le5 le11 p5p11" x="845" y="140" onclick="hld('svg10',5,11)" onmouseover="mrk('svg10',5,11)" onmouseout="unmrk('svg10',5,11)">nsubj:xsubj</text>
+<text class="le5 le12 p5p12" x="897" y="100" onclick="hld('svg10',5,12)" onmouseover="mrk('svg10',5,12)" onmouseout="unmrk('svg10',5,12)">nsubj:xsubj</text>
+<text class="le13 le2 p13p2" x="778" y="60" onclick="hld('svg10',13,2)" onmouseover="mrk('svg10',13,2)" onmouseout="unmrk('svg10',13,2)">punct</text>
+</g>
+</g>
+<g fill="#D0E0FF" stroke="black" stroke-width="1">
+<rect class="q1 en1 en2 ee1 ee2" x="4" y="348" width="104" height="48" rx="5" ry="5" />
+<rect class="q2 en1 en2 en0 en6 en13 ee1 ee2 ee0 ee6 ee13" x="116" y="348" width="104" height="48" rx="5" ry="5" />
+<rect class="q3 en3 en6 ee3 ee6" x="228" y="348" width="104" height="48" rx="5" ry="5" />
+<rect class="q4 en4 en6 ee4 ee6" x="340" y="348" width="104" height="48" rx="5" ry="5" />
+<rect class="q5 en5 en6 ee5 ee6 ee11 ee12" x="452" y="348" width="104" height="48" rx="5" ry="5" />
+<rect class="q6 en5 en6 en4 en3 en2 en11 ee5 ee6 ee4 ee3 ee2 ee11" x="564" y="348" width="104" height="48" rx="5" ry="5" />
+<rect class="q7 en7 en8 ee7 ee8" x="676" y="348" width="104" height="48" rx="5" ry="5" />
+<rect class="q8 en7 en8 en12 ee7 ee8 ee12" x="788" y="348" width="104" height="48" rx="5" ry="5" />
+<rect class="q9 en9 en12 ee9 ee12" x="900" y="348" width="104" height="48" rx="5" ry="5" />
+<rect class="q10 en10 en11 ee10 ee11" x="1012" y="348" width="104" height="48" rx="5" ry="5" />
+<rect class="q11 en10 en11 en12 en6 ee10 ee11 ee12 ee6 ee5" x="1124" y="348" width="104" height="48" rx="5" ry="5" />
+<rect class="q12 en12 en11 en9 en8 ee12 ee11 ee9 ee8 ee5" x="1236" y="348" width="104" height="48" rx="5" ry="5" />
+<rect class="q13 en13 en2 ee13 ee2" x="1348" y="348" width="104" height="48" rx="5" ry="5" />
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">
+<text x="56" y="367">PRON</text>
+<text x="168" y="367">VERB</text>
+<text x="280" y="367">SCONJ</text>
+<text x="392" y="367">PRON</text>
+<text x="504" y="367">PRON</text>
+<text x="616" y="367">VERB</text>
+<text x="728" y="367">ADP</text>
+<text x="840" y="367">NOUN</text>
+<text x="952" y="367">NOUN</text>
+<text x="1064" y="367">ADP</text>
+<text x="1176" y="367">VERB</text>
+<text x="1288" y="367">VERB</text>
+<text x="1400" y="367">PUNCT</text>
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle" font-style="italic">
+<text x="56" y="387">Ik</text>
+<text x="168" y="387">zie</text>
+<text x="280" y="387">dat</text>
+<text x="392" y="387">zij</text>
+<text x="504" y="387">hem</text>
+<text x="616" y="387">helpt</text>
+<text x="728" y="387">om</text>
+<text x="840" y="387">beren</text>
+<text x="952" y="387">vis</text>
+<text x="1064" y="387">te</text>
+<text x="1176" y="387">leren</text>
+<text x="1288" y="387">eten</text>
+<text x="1400" y="387">.</text>
+</g>
+<g opacity="0" stroke-width="1">
+<rect x="4" y="348" width="104" height="48" rx="5" ry="5" onclick="hold('svg10',1)" onmouseover="mark('svg10',1)" onmouseout="unmark('svg10',1)" />
+<rect x="116" y="348" width="104" height="48" rx="5" ry="5" onclick="hold('svg10',2)" onmouseover="mark('svg10',2)" onmouseout="unmark('svg10',2)" />
+<rect x="228" y="348" width="104" height="48" rx="5" ry="5" onclick="hold('svg10',3)" onmouseover="mark('svg10',3)" onmouseout="unmark('svg10',3)" />
+<rect x="340" y="348" width="104" height="48" rx="5" ry="5" onclick="hold('svg10',4)" onmouseover="mark('svg10',4)" onmouseout="unmark('svg10',4)" />
+<rect x="452" y="348" width="104" height="48" rx="5" ry="5" onclick="hold('svg10',5)" onmouseover="mark('svg10',5)" onmouseout="unmark('svg10',5)" />
+<rect x="564" y="348" width="104" height="48" rx="5" ry="5" onclick="hold('svg10',6)" onmouseover="mark('svg10',6)" onmouseout="unmark('svg10',6)" />
+<rect x="676" y="348" width="104" height="48" rx="5" ry="5" onclick="hold('svg10',7)" onmouseover="mark('svg10',7)" onmouseout="unmark('svg10',7)" />
+<rect x="788" y="348" width="104" height="48" rx="5" ry="5" onclick="hold('svg10',8)" onmouseover="mark('svg10',8)" onmouseout="unmark('svg10',8)" />
+<rect x="900" y="348" width="104" height="48" rx="5" ry="5" onclick="hold('svg10',9)" onmouseover="mark('svg10',9)" onmouseout="unmark('svg10',9)" />
+<rect x="1012" y="348" width="104" height="48" rx="5" ry="5" onclick="hold('svg10',10)" onmouseover="mark('svg10',10)" onmouseout="unmark('svg10',10)" />
+<rect x="1124" y="348" width="104" height="48" rx="5" ry="5" onclick="hold('svg10',11)" onmouseover="mark('svg10',11)" onmouseout="unmark('svg10',11)" />
+<rect x="1236" y="348" width="104" height="48" rx="5" ry="5" onclick="hold('svg10',12)" onmouseover="mark('svg10',12)" onmouseout="unmark('svg10',12)" />
+<rect x="1348" y="348" width="104" height="48" rx="5" ry="5" onclick="hold('svg10',13)" onmouseover="mark('svg10',13)" onmouseout="unmark('svg10',13)" />
+</g>
+<g fill="#D0E0FF" stroke="black" stroke-width="1">
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" font-style="italic" text-anchor="middle">
+</g>
+
+</svg>
+</div>
+<script type="text/javascript">
+tts['svg10'] = [
+['1', 'Ik','PRON','Case: Nom, Person: 1, PronType: Prs','ik','VNW|pers|pron|nomin|vol|1|ev'],
+['2', 'zie','VERB','Number: Sing, Tense: Pres, VerbForm: Fin','zien','WW|pv|tgw|ev'],
+['3', 'dat','SCONJ','','dat','VG|onder'],
+['4', 'zij','PRON','Case: Nom, Person: 3, PronType: Prs','zij','VNW|pers|pron|nomin|vol|3v|ev|fem'],
+['5', 'hem','PRON','Case: Acc, Person: 3, PronType: Prs','hem','VNW|pers|pron|obl|vol|3|ev|masc'],
+['6', 'helpt','VERB','Number: Sing, Tense: Pres, VerbForm: Fin','helpen','WW|pv|tgw|met-t'],
+['7', 'om','ADP','','om','VZ|init'],
+['8', 'beren','NOUN','Number: Plur','beer','N|soort|mv|basis'],
+['9', 'vis','NOUN','Gender: Com, Number: Sing','vis','N|soort|ev|basis|zijd|stan'],
+['10', 'te','ADP','','te','VZ|init'],
+['11', 'leren','VERB','VerbForm: Inf','leren','WW|inf|vrij|zonder'],
+['12', 'eten','VERB','VerbForm: Inf','eten','WW|inf|vrij|zonder'],
+['13', '.','PUNCT','','.','LET']
+];toggle('svg10',false);
+</script>
+<div class="udcontrol">
+<input type="radio" id="btnbsvg10" name="btnsvg10" onclick="toggle('svg10',false)" class="rb" checked /><label for="btnbsvg10">Basic</label>
+<input type="radio" id="btnesvg10" name="btnsvg10" onclick="toggle('svg10',true)" class="re" /><label for="btnesvg10">Enhanced</label>
+</div>
+<div class="comments"># sent_id = mensenverliezen
+# text = Mensen verliezen hun baan , het aantal faillissementen neemt snel toe , jarenlang opgebouwde vermogens slinken en de overheidsfinanciën vertonen onvermijdelijk grote tekorten
+</div>
+<div class="overflow">
+<svg id="svg11" width="2708" height="360">
+<g class="normal" style="visibility:hidden">
+<g fill="none" stroke="black" stroke-width="1">
+<path class="en1 en2 q1q2" d="M77 308 L77 348 C77 268 77 268 104 268 C132 268 132 268 132 348 L132 308" />
+<path class="en15 en16 q15q16" d="M1695 308 L1695 348 C1695 268 1695 268 1727 268 C1759 268 1759 268 1759 348 L1759 308" />
+<path class="en3 en4 q3q4" d="M301 308 L301 348 C301 268 301 268 336 268 C371 268 371 268 371 348 L371 308" />
+<path class="en14 en15 q14q15" d="M1575 308 L1575 348 C1575 268 1575 268 1613 268 C1651 268 1651 268 1651 348 L1651 308" />
+<path class="en19 en20 q19q20" d="M2187 308 L2187 348 C2187 268 2187 268 2224 268 C2261 268 2261 268 2261 348 L2261 308" />
+<path class="en6 en7 q6q7" d="M637 308 L637 348 C637 268 637 268 668 268 C700 268 700 268 700 348 L700 308" />
+<path class="en13 en14 q13q14" d="M1451 308 L1451 348 C1451 268 1451 268 1488 268 C1525 268 1525 268 1525 348 L1525 308" />
+<path class="en8 en7 q8q7" d="M826 308 L826 348 C826 268 826 268 791 268 C756 268 756 268 756 348 L756 308" />
+<path class="en22 en23 q22q23" d="M2561 308 L2561 348 C2561 268 2561 268 2596 268 C2631 268 2631 268 2631 348 L2631 308" />
+<path class="en10 en9 q10q9" d="M1073 308 L1073 348 C1073 268 1073 268 1043 268 C1013 268 1013 268 1013 348 L1013 308" />
+<path class="en18 en19 q18q19" d="M2032 308 L2032 348 C2032 268 2032 268 2074 268 C2116 268 2116 268 2116 348 L2116 308" />
+<path class="en21 en22 q21q22" d="M2443 308 L2443 348 C2443 268 2443 268 2481 268 C2519 268 2519 268 2519 348 L2519 308" />
+<path class="en11 en9 q11q9" d="M1185 308 L1185 308 C1185 228 1185 228 1088 228 C992 228 992 228 992 308 L992 308" />
+<path class="en7 en9 q7q9" d="M728 308 L728 308 C728 228 728 228 839 228 C950 228 950 228 950 308 L950 308" />
+<path class="en4 en2 q4q2" d="M413 308 L413 308 C413 228 413 228 308 228 C204 228 204 228 204 308 L204 308" />
+<path class="en2 q2q0" d="M144 308 L144 28" />
+<path class="en23 en20 q23q20" d="M2673 308 L2673 308 C2673 228 2673 228 2498 228 C2324 228 2324 228 2324 308 L2324 308" />
+<path class="en17 en20 q17q20" d="M1920 308 L1920 308 C1920 228 1920 228 2101 228 C2282 228 2282 228 2282 308 L2282 308" />
+<path class="en5 en2 q5q2" d="M483 308 L483 268 C483 188 483 188 337 188 C192 188 192 188 192 268 L192 308" />
+<path class="en20 en16 q20q16" d="M2303 308 L2303 268 C2303 188 2303 188 2059 188 C1815 188 1815 188 1815 268 L1815 308" />
+<path class="en9 en2 q9q2" d="M971 308 L971 228 C971 148 971 148 575 148 C180 148 180 148 180 228 L180 308" />
+<path class="en12 en2 q12q2" d="M1297 308 L1297 188 C1297 108 1297 108 732 108 C168 108 168 108 168 188 L168 308" />
+<path class="en16 en2 q16q2" d="M1787 308 L1787 148 C1787 68 1787 68 971 68 C156 68 156 68 156 148 L156 308" />
+</g>
+<g fill="black" stroke-width="1" stroke="black">
+<path class="en1 en2 q1q2" d="M77 308 l3 -14 l-6 0 Z" />
+<path class="en15 en16 q15q16" d="M1695 308 l3 -14 l-6 0 Z" />
+<path class="en3 en4 q3q4" d="M301 308 l3 -14 l-6 0 Z" />
+<path class="en14 en15 q14q15" d="M1575 308 l3 -14 l-6 0 Z" />
+<path class="en19 en20 q19q20" d="M2187 308 l3 -14 l-6 0 Z" />
+<path class="en6 en7 q6q7" d="M637 308 l3 -14 l-6 0 Z" />
+<path class="en13 en14 q13q14" d="M1451 308 l3 -14 l-6 0 Z" />
+<path class="en8 en7 q8q7" d="M826 308 l3 -14 l-6 0 Z" />
+<path class="en22 en23 q22q23" d="M2561 308 l3 -14 l-6 0 Z" />
+<path class="en10 en9 q10q9" d="M1073 308 l3 -14 l-6 0 Z" />
+<path class="en18 en19 q18q19" d="M2032 308 l3 -14 l-6 0 Z" />
+<path class="en21 en22 q21q22" d="M2443 308 l3 -14 l-6 0 Z" />
+<path class="en11 en9 q11q9" d="M1185 308 l3 -14 l-6 0 Z" />
+<path class="en7 en9 q7q9" d="M728 308 l3 -14 l-6 0 Z" />
+<path class="en4 en2 q4q2" d="M413 308 l3 -14 l-6 0 Z" />
+<path class="en2 en0 q2q0" d="M144 308 l3 -14 l-6 0 Z" />
+<path class="en23 en20 q23q20" d="M2673 308 l3 -14 l-6 0 Z" />
+<path class="en17 en20 q17q20" d="M1920 308 l3 -14 l-6 0 Z" />
+<path class="en5 en2 q5q2" d="M483 308 l3 -14 l-6 0 Z" />
+<path class="en20 en16 q20q16" d="M2303 308 l3 -14 l-6 0 Z" />
+<path class="en9 en2 q9q2" d="M971 308 l3 -14 l-6 0 Z" />
+<path class="en12 en2 q12q2" d="M1297 308 l3 -14 l-6 0 Z" />
+<path class="en16 en2 q16q2" d="M1787 308 l3 -14 l-6 0 Z" />
+</g>
+<g fill="white" stroke="white" stroke-width="1" opacity="0.9">
+<rect x="79" y="247" width="51" height="19" />
+<rect x="1701" y="247" width="51" height="19" />
+<rect x="289" y="247" width="94" height="19" />
+<rect x="1598" y="247" width="30" height="19" />
+<rect x="2198" y="247" width="51" height="19" />
+<rect x="652" y="247" width="33" height="19" />
+<rect x="1453" y="247" width="70" height="19" />
+<rect x="765" y="247" width="52" height="19" />
+<rect x="2570" y="247" width="51" height="19" />
+<rect x="1008" y="247" width="70" height="19" />
+<rect x="2057" y="247" width="33" height="19" />
+<rect x="2446" y="247" width="70" height="19" />
+<rect x="1030" y="207" width="116" height="19" />
+<rect x="813" y="207" width="51" height="19" />
+<rect x="292" y="207" width="32" height="19" />
+<rect x="124" y="7" width="39" height="19" />
+<rect x="2482" y="207" width="32" height="19" />
+<rect x="2088" y="207" width="26" height="19" />
+<rect x="311" y="167" width="52" height="19" />
+<rect x="2038" y="167" width="41" height="19" />
+<rect x="536" y="127" width="79" height="19" />
+<rect x="706" y="87" width="52" height="19" />
+<rect x="932" y="47" width="79" height="19" />
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">
+<text class="ln1 ln2 p1p2" x="104" y="260" onclick="hld('svg11',1,2)" onmouseover="mrk('svg11',1,2)" onmouseout="unmrk('svg11',1,2)">nsubj</text>
+<text class="ln15 ln16 p15p16" x="1727" y="260" onclick="hld('svg11',15,16)" onmouseover="mrk('svg11',15,16)" onmouseout="unmrk('svg11',15,16)">nsubj</text>
+<text class="ln3 ln4 p3p4" x="336" y="260" onclick="hld('svg11',3,4)" onmouseover="mrk('svg11',3,4)" onmouseout="unmrk('svg11',3,4)">nmod:poss</text>
+<text class="ln14 ln15 p14p15" x="1613" y="260" onclick="hld('svg11',14,15)" onmouseover="mrk('svg11',14,15)" onmouseout="unmrk('svg11',14,15)">acl</text>
+<text class="ln19 ln20 p19p20" x="2224" y="260" onclick="hld('svg11',19,20)" onmouseover="mrk('svg11',19,20)" onmouseout="unmrk('svg11',19,20)">nsubj</text>
+<text class="ln6 ln7 p6p7" x="668" y="260" onclick="hld('svg11',6,7)" onmouseover="mrk('svg11',6,7)" onmouseout="unmrk('svg11',6,7)">det</text>
+<text class="ln13 ln14 p13p14" x="1488" y="260" onclick="hld('svg11',13,14)" onmouseover="mrk('svg11',13,14)" onmouseout="unmrk('svg11',13,14)">advmod</text>
+<text class="ln8 ln7 p8p7" x="791" y="260" onclick="hld('svg11',8,7)" onmouseover="mrk('svg11',8,7)" onmouseout="unmrk('svg11',8,7)">nmod</text>
+<text class="ln22 ln23 p22p23" x="2596" y="260" onclick="hld('svg11',22,23)" onmouseover="mrk('svg11',22,23)" onmouseout="unmrk('svg11',22,23)">amod</text>
+<text class="ln10 ln9 p10p9" x="1043" y="260" onclick="hld('svg11',10,9)" onmouseover="mrk('svg11',10,9)" onmouseout="unmrk('svg11',10,9)">advmod</text>
+<text class="ln18 ln19 p18p19" x="2074" y="260" onclick="hld('svg11',18,19)" onmouseover="mrk('svg11',18,19)" onmouseout="unmrk('svg11',18,19)">det</text>
+<text class="ln21 ln22 p21p22" x="2481" y="260" onclick="hld('svg11',21,22)" onmouseover="mrk('svg11',21,22)" onmouseout="unmrk('svg11',21,22)">advmod</text>
+<text class="ln11 ln9 p11p9" x="1088" y="220" onclick="hld('svg11',11,9)" onmouseover="mrk('svg11',11,9)" onmouseout="unmrk('svg11',11,9)">compound:prt</text>
+<text class="ln7 ln9 p7p9" x="839" y="220" onclick="hld('svg11',7,9)" onmouseover="mrk('svg11',7,9)" onmouseout="unmrk('svg11',7,9)">nsubj</text>
+<text class="ln4 ln2 p4p2" x="308" y="220" onclick="hld('svg11',4,2)" onmouseover="mrk('svg11',4,2)" onmouseout="unmrk('svg11',4,2)">obj</text>
+<text class="ln2 ln0 p2p0" x="144" y="20" onclick="hld('svg11',2,0)" onmouseover="mrk('svg11',2,0)" onmouseout="unmrk('svg11',2,0)">root</text>
+<text class="ln23 ln20 p23p20" x="2498" y="220" onclick="hld('svg11',23,20)" onmouseover="mrk('svg11',23,20)" onmouseout="unmrk('svg11',23,20)">obj</text>
+<text class="ln17 ln20 p17p20" x="2101" y="220" onclick="hld('svg11',17,20)" onmouseover="mrk('svg11',17,20)" onmouseout="unmrk('svg11',17,20)">cc</text>
+<text class="ln5 ln2 p5p2" x="337" y="180" onclick="hld('svg11',5,2)" onmouseover="mrk('svg11',5,2)" onmouseout="unmrk('svg11',5,2)">punct</text>
+<text class="ln20 ln16 p20p16" x="2059" y="180" onclick="hld('svg11',20,16)" onmouseover="mrk('svg11',20,16)" onmouseout="unmrk('svg11',20,16)">conj</text>
+<text class="ln9 ln2 p9p2" x="575" y="140" onclick="hld('svg11',9,2)" onmouseover="mrk('svg11',9,2)" onmouseout="unmrk('svg11',9,2)">parataxis</text>
+<text class="ln12 ln2 p12p2" x="732" y="100" onclick="hld('svg11',12,2)" onmouseover="mrk('svg11',12,2)" onmouseout="unmrk('svg11',12,2)">punct</text>
+<text class="ln16 ln2 p16p2" x="971" y="60" onclick="hld('svg11',16,2)" onmouseover="mrk('svg11',16,2)" onmouseout="unmrk('svg11',16,2)">parataxis</text>
+</g>
+</g>
+<g class="enhanced">
+<g fill="none" stroke="black" stroke-width="1">
+<path class="ee1 ee2 q1q2" d="M77 308 L77 348 C77 268 77 268 104 268 C132 268 132 268 132 348 L132 308" />
+<path class="ee15 ee16 q15q16" d="M1695 308 L1695 348 C1695 268 1695 268 1727 268 C1759 268 1759 268 1759 348 L1759 308" />
+<path class="ee3 ee4 q3q4" d="M301 308 L301 348 C301 268 301 268 336 268 C371 268 371 268 371 348 L371 308" />
+<path class="ee14 ee15 q14q15" d="M1575 308 L1575 348 C1575 268 1575 268 1613 268 C1651 268 1651 268 1651 348 L1651 308" />
+<path class="ee19 ee20 q19q20" d="M2187 308 L2187 348 C2187 268 2187 268 2224 268 C2261 268 2261 268 2261 348 L2261 308" />
+<path class="ee6 ee7 q6q7" d="M637 308 L637 348 C637 268 637 268 668 268 C700 268 700 268 700 348 L700 308" />
+<path class="ee13 ee14 q13q14" d="M1451 308 L1451 348 C1451 268 1451 268 1488 268 C1525 268 1525 268 1525 348 L1525 308" />
+<path class="ee8 ee7 q8q7" d="M826 308 L826 348 C826 268 826 268 791 268 C756 268 756 268 756 348 L756 308" />
+<path class="ee22 ee23 q22q23" d="M2561 308 L2561 348 C2561 268 2561 268 2596 268 C2631 268 2631 268 2631 348 L2631 308" />
+<path class="ee10 ee9 q10q9" d="M1073 308 L1073 348 C1073 268 1073 268 1043 268 C1013 268 1013 268 1013 348 L1013 308" />
+<path class="ee18 ee19 q18q19" d="M2032 308 L2032 348 C2032 268 2032 268 2074 268 C2116 268 2116 268 2116 348 L2116 308" />
+<path class="ee21 ee22 q21q22" d="M2443 308 L2443 348 C2443 268 2443 268 2481 268 C2519 268 2519 268 2519 348 L2519 308" />
+<path class="ee11 ee9 q11q9" d="M1185 308 L1185 308 C1185 228 1185 228 1088 228 C992 228 992 228 992 308 L992 308" />
+<path class="ee7 ee9 q7q9" d="M728 308 L728 308 C728 228 728 228 839 228 C950 228 950 228 950 308 L950 308" />
+<path class="ee4 ee2 q4q2" d="M413 308 L413 308 C413 228 413 228 308 228 C204 228 204 228 204 308 L204 308" />
+<path class="ee2 q2q0" d="M144 308 L144 28" />
+<path class="ee23 ee20 q23q20" d="M2673 308 L2673 308 C2673 228 2673 228 2498 228 C2324 228 2324 228 2324 308 L2324 308" />
+<path class="ee17 ee20 q17q20" d="M1920 308 L1920 308 C1920 228 1920 228 2101 228 C2282 228 2282 228 2282 308 L2282 308" />
+<path class="ee5 ee2 q5q2" d="M483 308 L483 268 C483 188 483 188 337 188 C192 188 192 188 192 268 L192 308" />
+<path class="ee20 ee16 q20q16" d="M2303 308 L2303 268 C2303 188 2303 188 2059 188 C1815 188 1815 188 1815 268 L1815 308" />
+<path class="ee9 ee2 q9q2" d="M971 308 L971 228 C971 148 971 148 575 148 C180 148 180 148 180 228 L180 308" />
+<path class="ee12 ee2 q12q2" d="M1297 308 L1297 188 C1297 108 1297 108 732 108 C168 108 168 108 168 188 L168 308" />
+<path class="ee16 ee2 q16q2" d="M1787 308 L1787 148 C1787 68 1787 68 971 68 C156 68 156 68 156 148 L156 308" />
+</g>
+<g fill="black" stroke-width="1" stroke="black">
+<path class="ee1 ee2 q1q2" d="M77 308 l3 -14 l-6 0 Z" />
+<path class="ee15 ee16 q15q16" d="M1695 308 l3 -14 l-6 0 Z" />
+<path class="ee3 ee4 q3q4" d="M301 308 l3 -14 l-6 0 Z" />
+<path class="ee14 ee15 q14q15" d="M1575 308 l3 -14 l-6 0 Z" />
+<path class="ee19 ee20 q19q20" d="M2187 308 l3 -14 l-6 0 Z" />
+<path class="ee6 ee7 q6q7" d="M637 308 l3 -14 l-6 0 Z" />
+<path class="ee13 ee14 q13q14" d="M1451 308 l3 -14 l-6 0 Z" />
+<path class="ee8 ee7 q8q7" d="M826 308 l3 -14 l-6 0 Z" />
+<path class="ee22 ee23 q22q23" d="M2561 308 l3 -14 l-6 0 Z" />
+<path class="ee10 ee9 q10q9" d="M1073 308 l3 -14 l-6 0 Z" />
+<path class="ee18 ee19 q18q19" d="M2032 308 l3 -14 l-6 0 Z" />
+<path class="ee21 ee22 q21q22" d="M2443 308 l3 -14 l-6 0 Z" />
+<path class="ee11 ee9 q11q9" d="M1185 308 l3 -14 l-6 0 Z" />
+<path class="ee7 ee9 q7q9" d="M728 308 l3 -14 l-6 0 Z" />
+<path class="ee4 ee2 q4q2" d="M413 308 l3 -14 l-6 0 Z" />
+<path class="ee2 ee0 q2q0" d="M144 308 l3 -14 l-6 0 Z" />
+<path class="ee23 ee20 q23q20" d="M2673 308 l3 -14 l-6 0 Z" />
+<path class="ee17 ee20 q17q20" d="M1920 308 l3 -14 l-6 0 Z" />
+<path class="ee5 ee2 q5q2" d="M483 308 l3 -14 l-6 0 Z" />
+<path class="ee20 ee16 q20q16" d="M2303 308 l3 -14 l-6 0 Z" />
+<path class="ee9 ee2 q9q2" d="M971 308 l3 -14 l-6 0 Z" />
+<path class="ee12 ee2 q12q2" d="M1297 308 l3 -14 l-6 0 Z" />
+<path class="ee16 ee2 q16q2" d="M1787 308 l3 -14 l-6 0 Z" />
+</g>
+<g fill="white" stroke="white" stroke-width="1" opacity="0.9">
+<rect x="79" y="247" width="51" height="19" />
+<rect x="1701" y="247" width="51" height="19" />
+<rect x="289" y="247" width="94" height="19" />
+<rect x="1598" y="247" width="30" height="19" />
+<rect x="2198" y="247" width="51" height="19" />
+<rect x="652" y="247" width="33" height="19" />
+<rect x="1453" y="247" width="70" height="19" />
+<rect x="765" y="247" width="52" height="19" />
+<rect x="2570" y="247" width="51" height="19" />
+<rect x="1008" y="247" width="70" height="19" />
+<rect x="2057" y="247" width="33" height="19" />
+<rect x="2446" y="247" width="70" height="19" />
+<rect x="1030" y="207" width="116" height="19" />
+<rect x="813" y="207" width="51" height="19" />
+<rect x="292" y="207" width="32" height="19" />
+<rect x="124" y="7" width="39" height="19" />
+<rect x="2482" y="207" width="32" height="19" />
+<rect x="2088" y="207" width="26" height="19" />
+<rect x="311" y="167" width="52" height="19" />
+<rect x="2027" y="167" width="64" height="19" />
+<rect x="536" y="127" width="79" height="19" />
+<rect x="706" y="87" width="52" height="19" />
+<rect x="932" y="47" width="79" height="19" />
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">
+<text class="le1 le2 p1p2" x="104" y="260" onclick="hld('svg11',1,2)" onmouseover="mrk('svg11',1,2)" onmouseout="unmrk('svg11',1,2)">nsubj</text>
+<text class="le15 le16 p15p16" x="1727" y="260" onclick="hld('svg11',15,16)" onmouseover="mrk('svg11',15,16)" onmouseout="unmrk('svg11',15,16)">nsubj</text>
+<text class="le3 le4 p3p4" x="336" y="260" onclick="hld('svg11',3,4)" onmouseover="mrk('svg11',3,4)" onmouseout="unmrk('svg11',3,4)">nmod:poss</text>
+<text class="le14 le15 p14p15" x="1613" y="260" onclick="hld('svg11',14,15)" onmouseover="mrk('svg11',14,15)" onmouseout="unmrk('svg11',14,15)">acl</text>
+<text class="le19 le20 p19p20" x="2224" y="260" onclick="hld('svg11',19,20)" onmouseover="mrk('svg11',19,20)" onmouseout="unmrk('svg11',19,20)">nsubj</text>
+<text class="le6 le7 p6p7" x="668" y="260" onclick="hld('svg11',6,7)" onmouseover="mrk('svg11',6,7)" onmouseout="unmrk('svg11',6,7)">det</text>
+<text class="le13 le14 p13p14" x="1488" y="260" onclick="hld('svg11',13,14)" onmouseover="mrk('svg11',13,14)" onmouseout="unmrk('svg11',13,14)">advmod</text>
+<text class="le8 le7 p8p7" x="791" y="260" onclick="hld('svg11',8,7)" onmouseover="mrk('svg11',8,7)" onmouseout="unmrk('svg11',8,7)">nmod</text>
+<text class="le22 le23 p22p23" x="2596" y="260" onclick="hld('svg11',22,23)" onmouseover="mrk('svg11',22,23)" onmouseout="unmrk('svg11',22,23)">amod</text>
+<text class="le10 le9 p10p9" x="1043" y="260" onclick="hld('svg11',10,9)" onmouseover="mrk('svg11',10,9)" onmouseout="unmrk('svg11',10,9)">advmod</text>
+<text class="le18 le19 p18p19" x="2074" y="260" onclick="hld('svg11',18,19)" onmouseover="mrk('svg11',18,19)" onmouseout="unmrk('svg11',18,19)">det</text>
+<text class="le21 le22 p21p22" x="2481" y="260" onclick="hld('svg11',21,22)" onmouseover="mrk('svg11',21,22)" onmouseout="unmrk('svg11',21,22)">advmod</text>
+<text class="le11 le9 p11p9" x="1088" y="220" onclick="hld('svg11',11,9)" onmouseover="mrk('svg11',11,9)" onmouseout="unmrk('svg11',11,9)">compound:prt</text>
+<text class="le7 le9 p7p9" x="839" y="220" onclick="hld('svg11',7,9)" onmouseover="mrk('svg11',7,9)" onmouseout="unmrk('svg11',7,9)">nsubj</text>
+<text class="le4 le2 p4p2" x="308" y="220" onclick="hld('svg11',4,2)" onmouseover="mrk('svg11',4,2)" onmouseout="unmrk('svg11',4,2)">obj</text>
+<text class="le2 le0 p2p0" x="144" y="20" onclick="hld('svg11',2,0)" onmouseover="mrk('svg11',2,0)" onmouseout="unmrk('svg11',2,0)">root</text>
+<text class="le23 le20 p23p20" x="2498" y="220" onclick="hld('svg11',23,20)" onmouseover="mrk('svg11',23,20)" onmouseout="unmrk('svg11',23,20)">obj</text>
+<text class="le17 le20 p17p20" x="2101" y="220" onclick="hld('svg11',17,20)" onmouseover="mrk('svg11',17,20)" onmouseout="unmrk('svg11',17,20)">cc</text>
+<text class="le5 le2 p5p2" x="337" y="180" onclick="hld('svg11',5,2)" onmouseover="mrk('svg11',5,2)" onmouseout="unmrk('svg11',5,2)">punct</text>
+<text class="le20 le16 p20p16" x="2059" y="180" onclick="hld('svg11',20,16)" onmouseover="mrk('svg11',20,16)" onmouseout="unmrk('svg11',20,16)">conj:en</text>
+<text class="le9 le2 p9p2" x="575" y="140" onclick="hld('svg11',9,2)" onmouseover="mrk('svg11',9,2)" onmouseout="unmrk('svg11',9,2)">parataxis</text>
+<text class="le12 le2 p12p2" x="732" y="100" onclick="hld('svg11',12,2)" onmouseover="mrk('svg11',12,2)" onmouseout="unmrk('svg11',12,2)">punct</text>
+<text class="le16 le2 p16p2" x="971" y="60" onclick="hld('svg11',16,2)" onmouseover="mrk('svg11',16,2)" onmouseout="unmrk('svg11',16,2)">parataxis</text>
+</g>
+</g>
+<g fill="#D0E0FF" stroke="black" stroke-width="1">
+<rect class="q1 en1 en2 ee1 ee2" x="4" y="308" width="104" height="48" rx="5" ry="5" />
+<rect class="q2 en1 en2 en4 en0 en5 en9 en12 en16 ee1 ee2 ee4 ee0 ee5 ee9 ee12 ee16" x="116" y="308" width="104" height="48" rx="5" ry="5" />
+<rect class="q3 en3 en4 ee3 ee4" x="228" y="308" width="104" height="48" rx="5" ry="5" />
+<rect class="q4 en3 en4 en2 ee3 ee4 ee2" x="340" y="308" width="104" height="48" rx="5" ry="5" />
+<rect class="q5 en5 en2 ee5 ee2" x="452" y="308" width="104" height="48" rx="5" ry="5" />
+<rect class="q6 en6 en7 ee6 ee7" x="564" y="308" width="104" height="48" rx="5" ry="5" />
+<rect class="q7 en6 en7 en8 en9 ee6 ee7 ee8 ee9" x="676" y="308" width="104" height="48" rx="5" ry="5" />
+<rect class="q8 en8 en7 ee8 ee7" x="788" y="308" width="134" height="48" rx="5" ry="5" />
+<rect class="q9 en10 en9 en11 en7 en2 ee10 ee9 ee11 ee7 ee2" x="930" y="308" width="104" height="48" rx="5" ry="5" />
+<rect class="q10 en10 en9 ee10 ee9" x="1042" y="308" width="104" height="48" rx="5" ry="5" />
+<rect class="q11 en11 en9 ee11 ee9" x="1154" y="308" width="104" height="48" rx="5" ry="5" />
+<rect class="q12 en12 en2 ee12 ee2" x="1266" y="308" width="104" height="48" rx="5" ry="5" />
+<rect class="q13 en13 en14 ee13 ee14" x="1378" y="308" width="104" height="48" rx="5" ry="5" />
+<rect class="q14 en14 en15 en13 ee14 ee15 ee13" x="1490" y="308" width="121" height="48" rx="5" ry="5" />
+<rect class="q15 en15 en16 en14 ee15 ee16 ee14" x="1619" y="308" width="108" height="48" rx="5" ry="5" />
+<rect class="q16 en15 en16 en20 en2 ee15 ee16 ee20 ee2" x="1735" y="308" width="104" height="48" rx="5" ry="5" />
+<rect class="q17 en17 en20 ee17 ee20" x="1847" y="308" width="104" height="48" rx="5" ry="5" />
+<rect class="q18 en18 en19 ee18 ee19" x="1959" y="308" width="104" height="48" rx="5" ry="5" />
+<rect class="q19 en19 en20 en18 ee19 ee20 ee18" x="2071" y="308" width="162" height="48" rx="5" ry="5" />
+<rect class="q20 en19 en20 en23 en17 en16 ee19 ee20 ee23 ee17 ee16" x="2241" y="308" width="104" height="48" rx="5" ry="5" />
+<rect class="q21 en21 en22 ee21 ee22" x="2353" y="308" width="127" height="48" rx="5" ry="5" />
+<rect class="q22 en22 en23 en21 ee22 ee23 ee21" x="2488" y="308" width="104" height="48" rx="5" ry="5" />
+<rect class="q23 en22 en23 en20 ee22 ee23 ee20" x="2600" y="308" width="104" height="48" rx="5" ry="5" />
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">
+<text x="56" y="327">NOUN</text>
+<text x="168" y="327">VERB</text>
+<text x="280" y="327">PRON</text>
+<text x="392" y="327">NOUN</text>
+<text x="504" y="327">PUNCT</text>
+<text x="616" y="327">DET</text>
+<text x="728" y="327">NOUN</text>
+<text x="855" y="327">NOUN</text>
+<text x="982" y="327">VERB</text>
+<text x="1094" y="327">ADJ</text>
+<text x="1206" y="327">ADP</text>
+<text x="1318" y="327">PUNCT</text>
+<text x="1430" y="327">ADJ</text>
+<text x="1550" y="327">VERB</text>
+<text x="1673" y="327">NOUN</text>
+<text x="1787" y="327">VERB</text>
+<text x="1899" y="327">CCONJ</text>
+<text x="2011" y="327">DET</text>
+<text x="2152" y="327">NOUN</text>
+<text x="2293" y="327">VERB</text>
+<text x="2416" y="327">ADJ</text>
+<text x="2540" y="327">ADJ</text>
+<text x="2652" y="327">NOUN</text>
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle" font-style="italic">
+<text x="56" y="347">Mensen</text>
+<text x="168" y="347">verliezen</text>
+<text x="280" y="347">hun</text>
+<text x="392" y="347">baan</text>
+<text x="504" y="347">,</text>
+<text x="616" y="347">het</text>
+<text x="728" y="347">aantal</text>
+<text x="855" y="347">faillissementen</text>
+<text x="982" y="347">neemt</text>
+<text x="1094" y="347">snel</text>
+<text x="1206" y="347">toe</text>
+<text x="1318" y="347">,</text>
+<text x="1430" y="347">jarenlang</text>
+<text x="1550" y="347">opgebouwde</text>
+<text x="1673" y="347">vermogens</text>
+<text x="1787" y="347">slinken</text>
+<text x="1899" y="347">en</text>
+<text x="2011" y="347">de</text>
+<text x="2152" y="347">overheidsfinanciën</text>
+<text x="2293" y="347">vertonen</text>
+<text x="2416" y="347">onvermijdelijk</text>
+<text x="2540" y="347">grote</text>
+<text x="2652" y="347">tekorten</text>
+</g>
+<g opacity="0" stroke-width="1">
+<rect x="4" y="308" width="104" height="48" rx="5" ry="5" onclick="hold('svg11',1)" onmouseover="mark('svg11',1)" onmouseout="unmark('svg11',1)" />
+<rect x="116" y="308" width="104" height="48" rx="5" ry="5" onclick="hold('svg11',2)" onmouseover="mark('svg11',2)" onmouseout="unmark('svg11',2)" />
+<rect x="228" y="308" width="104" height="48" rx="5" ry="5" onclick="hold('svg11',3)" onmouseover="mark('svg11',3)" onmouseout="unmark('svg11',3)" />
+<rect x="340" y="308" width="104" height="48" rx="5" ry="5" onclick="hold('svg11',4)" onmouseover="mark('svg11',4)" onmouseout="unmark('svg11',4)" />
+<rect x="452" y="308" width="104" height="48" rx="5" ry="5" onclick="hold('svg11',5)" onmouseover="mark('svg11',5)" onmouseout="unmark('svg11',5)" />
+<rect x="564" y="308" width="104" height="48" rx="5" ry="5" onclick="hold('svg11',6)" onmouseover="mark('svg11',6)" onmouseout="unmark('svg11',6)" />
+<rect x="676" y="308" width="104" height="48" rx="5" ry="5" onclick="hold('svg11',7)" onmouseover="mark('svg11',7)" onmouseout="unmark('svg11',7)" />
+<rect x="788" y="308" width="134" height="48" rx="5" ry="5" onclick="hold('svg11',8)" onmouseover="mark('svg11',8)" onmouseout="unmark('svg11',8)" />
+<rect x="930" y="308" width="104" height="48" rx="5" ry="5" onclick="hold('svg11',9)" onmouseover="mark('svg11',9)" onmouseout="unmark('svg11',9)" />
+<rect x="1042" y="308" width="104" height="48" rx="5" ry="5" onclick="hold('svg11',10)" onmouseover="mark('svg11',10)" onmouseout="unmark('svg11',10)" />
+<rect x="1154" y="308" width="104" height="48" rx="5" ry="5" onclick="hold('svg11',11)" onmouseover="mark('svg11',11)" onmouseout="unmark('svg11',11)" />
+<rect x="1266" y="308" width="104" height="48" rx="5" ry="5" onclick="hold('svg11',12)" onmouseover="mark('svg11',12)" onmouseout="unmark('svg11',12)" />
+<rect x="1378" y="308" width="104" height="48" rx="5" ry="5" onclick="hold('svg11',13)" onmouseover="mark('svg11',13)" onmouseout="unmark('svg11',13)" />
+<rect x="1490" y="308" width="121" height="48" rx="5" ry="5" onclick="hold('svg11',14)" onmouseover="mark('svg11',14)" onmouseout="unmark('svg11',14)" />
+<rect x="1619" y="308" width="108" height="48" rx="5" ry="5" onclick="hold('svg11',15)" onmouseover="mark('svg11',15)" onmouseout="unmark('svg11',15)" />
+<rect x="1735" y="308" width="104" height="48" rx="5" ry="5" onclick="hold('svg11',16)" onmouseover="mark('svg11',16)" onmouseout="unmark('svg11',16)" />
+<rect x="1847" y="308" width="104" height="48" rx="5" ry="5" onclick="hold('svg11',17)" onmouseover="mark('svg11',17)" onmouseout="unmark('svg11',17)" />
+<rect x="1959" y="308" width="104" height="48" rx="5" ry="5" onclick="hold('svg11',18)" onmouseover="mark('svg11',18)" onmouseout="unmark('svg11',18)" />
+<rect x="2071" y="308" width="162" height="48" rx="5" ry="5" onclick="hold('svg11',19)" onmouseover="mark('svg11',19)" onmouseout="unmark('svg11',19)" />
+<rect x="2241" y="308" width="104" height="48" rx="5" ry="5" onclick="hold('svg11',20)" onmouseover="mark('svg11',20)" onmouseout="unmark('svg11',20)" />
+<rect x="2353" y="308" width="127" height="48" rx="5" ry="5" onclick="hold('svg11',21)" onmouseover="mark('svg11',21)" onmouseout="unmark('svg11',21)" />
+<rect x="2488" y="308" width="104" height="48" rx="5" ry="5" onclick="hold('svg11',22)" onmouseover="mark('svg11',22)" onmouseout="unmark('svg11',22)" />
+<rect x="2600" y="308" width="104" height="48" rx="5" ry="5" onclick="hold('svg11',23)" onmouseover="mark('svg11',23)" onmouseout="unmark('svg11',23)" />
+</g>
+<g fill="#D0E0FF" stroke="black" stroke-width="1">
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" font-style="italic" text-anchor="middle">
+</g>
+
+</svg>
+</div>
+<script type="text/javascript">
+tts['svg11'] = [
+['1', 'Mensen','NOUN','Number: Plur','mens','N|soort|mv|basis'],
+['2', 'verliezen','VERB','Number: Plur, Tense: Pres, VerbForm: Fin','verliezen','WW|pv|tgw|mv'],
+['3', 'hun','PRON','Person: 3, PronType: Prs','hun','VNW|bez|det|stan|vol|3|mv|prenom|zonder|agr'],
+['4', 'baan','NOUN','Gender: Com, Number: Sing','baan','N|soort|ev|basis|zijd|stan'],
+['5', ',','PUNCT','',',','LET'],
+['6', 'het','DET','Definite: Def','het','LID|bep|stan|evon'],
+['7', 'aantal','NOUN','Gender: Neut, Number: Sing','aantal','N|soort|ev|basis|onz|stan'],
+['8', 'faillissementen','NOUN','Number: Plur','faillissement','N|soort|mv|basis'],
+['9', 'neemt','VERB','Number: Sing, Tense: Pres, VerbForm: Fin','toe_nemen','WW|pv|tgw|met-t'],
+['10', 'snel','ADJ','Degree: Pos','snel','ADJ|vrij|basis|zonder'],
+['11', 'toe','ADP','','toe','VZ|fin'],
+['12', ',','PUNCT','',',','LET'],
+['13', 'jarenlang','ADJ','Degree: Pos','jaar_lang','ADJ|vrij|basis|zonder'],
+['14', 'opgebouwde','VERB','VerbForm: Part','opgebouwd','WW|vd|prenom|met-e'],
+['15', 'vermogens','NOUN','Number: Plur','vermogen','N|soort|mv|basis'],
+['16', 'slinken','VERB','Number: Plur, Tense: Pres, VerbForm: Fin','slinken','WW|pv|tgw|mv'],
+['17', 'en','CCONJ','','en','VG|neven'],
+['18', 'de','DET','Definite: Def','de','LID|bep|stan|rest'],
+['19', 'overheidsfinanciën','NOUN','Number: Plur','overheid_financiën','N|soort|mv|basis'],
+['20', 'vertonen','VERB','Number: Plur, Tense: Pres, VerbForm: Fin','vertonen','WW|pv|tgw|mv'],
+['21', 'onvermijdelijk','ADJ','Degree: Pos','onvermijdelijk','ADJ|vrij|basis|zonder'],
+['22', 'grote','ADJ','Degree: Pos','groot','ADJ|prenom|basis|met-e|stan'],
+['23', 'tekorten','NOUN','Number: Plur','tekort','N|soort|mv|basis']
+];toggle('svg11',false);
+</script>
+<div class="udcontrol">
+<input type="radio" id="btnbsvg11" name="btnsvg11" onclick="toggle('svg11',false)" class="rb" checked /><label for="btnbsvg11">Basic</label>
+<input type="radio" id="btnesvg11" name="btnsvg11" onclick="toggle('svg11',true)" class="re" /><label for="btnesvg11">Enhanced</label>
+</div>
+<div class="comments"># sent_id = staatsschuld
+# text = De staatsschuld is fors gestegen en zal niet vanzelf weer verminderen .
+</div>
+<div class="overflow">
+<svg id="svg12" width="1373" height="440">
+<g class="normal" style="visibility:hidden">
+<g fill="none" stroke="black" stroke-width="1">
+<path class="en1 en2 q1q2" d="M77 388 L77 428 C77 348 77 348 109 348 C142 348 142 348 142 428 L142 388" />
+<path class="en10 en11 q10q11" d="M1100 388 L1100 428 C1100 348 1100 348 1128 348 C1156 348 1156 348 1156 428 L1156 388" />
+<path class="en4 en5 q4q5" d="M428 388 L428 428 C428 348 428 348 456 348 C484 348 484 348 484 428 L484 388" />
+<path class="en3 en5 q3q5" d="M316 388 L316 388 C316 308 316 308 407 308 C498 308 498 308 498 388 L498 388" />
+<path class="en9 en11 q9q11" d="M988 388 L988 388 C988 308 988 308 1079 308 C1170 308 1170 308 1170 388 L1170 388" />
+<path class="en2 en5 q2q5" d="M208 388 L208 348 C208 268 208 268 360 268 C512 268 512 268 512 348 L512 388" />
+<path class="en8 en11 q8q11" d="M876 388 L876 348 C876 268 876 268 1030 268 C1184 268 1184 268 1184 348 L1184 388" />
+<path class="en7 en11 q7q11" d="M764 388 L764 308 C764 228 764 228 981 228 C1198 228 1198 228 1198 308 L1198 388" />
+<path class="en6 en11 q6q11" d="M652 388 L652 268 C652 188 652 188 932 188 C1212 188 1212 188 1212 268 L1212 388" />
+<path class="en5 q5q0" d="M526 388 L526 28" />
+<path class="en11 en5 q11q5" d="M1226 388 L1226 228 C1226 148 1226 148 890 148 C554 148 554 148 554 228 L554 388" />
+<path class="en12 en5 q12q5" d="M1296 388 L1296 188 C1296 108 1296 108 918 108 C540 108 540 108 540 188 L540 388" />
+</g>
+<g fill="black" stroke-width="1" stroke="black">
+<path class="en1 en2 q1q2" d="M77 388 l3 -14 l-6 0 Z" />
+<path class="en10 en11 q10q11" d="M1100 388 l3 -14 l-6 0 Z" />
+<path class="en4 en5 q4q5" d="M428 388 l3 -14 l-6 0 Z" />
+<path class="en3 en5 q3q5" d="M316 388 l3 -14 l-6 0 Z" />
+<path class="en9 en11 q9q11" d="M988 388 l3 -14 l-6 0 Z" />
+<path class="en2 en5 q2q5" d="M208 388 l3 -14 l-6 0 Z" />
+<path class="en8 en11 q8q11" d="M876 388 l3 -14 l-6 0 Z" />
+<path class="en7 en11 q7q11" d="M764 388 l3 -14 l-6 0 Z" />
+<path class="en6 en11 q6q11" d="M652 388 l3 -14 l-6 0 Z" />
+<path class="en5 en0 q5q0" d="M526 388 l3 -14 l-6 0 Z" />
+<path class="en11 en5 q11q5" d="M1226 388 l3 -14 l-6 0 Z" />
+<path class="en12 en5 q12q5" d="M1296 388 l3 -14 l-6 0 Z" />
+</g>
+<g fill="white" stroke="white" stroke-width="1" opacity="0.9">
+<rect x="93" y="327" width="33" height="19" />
+<rect x="1093" y="327" width="70" height="19" />
+<rect x="421" y="327" width="70" height="19" />
+<rect x="389" y="287" width="36" height="19" />
+<rect x="1044" y="287" width="70" height="19" />
+<rect x="334" y="247" width="51" height="19" />
+<rect x="995" y="247" width="70" height="19" />
+<rect x="963" y="207" width="36" height="19" />
+<rect x="919" y="167" width="26" height="19" />
+<rect x="506" y="7" width="39" height="19" />
+<rect x="869" y="127" width="41" height="19" />
+<rect x="892" y="87" width="52" height="19" />
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">
+<text class="ln1 ln2 p1p2" x="109" y="340" onclick="hld('svg12',1,2)" onmouseover="mrk('svg12',1,2)" onmouseout="unmrk('svg12',1,2)">det</text>
+<text class="ln10 ln11 p10p11" x="1128" y="340" onclick="hld('svg12',10,11)" onmouseover="mrk('svg12',10,11)" onmouseout="unmrk('svg12',10,11)">advmod</text>
+<text class="ln4 ln5 p4p5" x="456" y="340" onclick="hld('svg12',4,5)" onmouseover="mrk('svg12',4,5)" onmouseout="unmrk('svg12',4,5)">advmod</text>
+<text class="ln3 ln5 p3p5" x="407" y="300" onclick="hld('svg12',3,5)" onmouseover="mrk('svg12',3,5)" onmouseout="unmrk('svg12',3,5)">aux</text>
+<text class="ln9 ln11 p9p11" x="1079" y="300" onclick="hld('svg12',9,11)" onmouseover="mrk('svg12',9,11)" onmouseout="unmrk('svg12',9,11)">advmod</text>
+<text class="ln2 ln5 p2p5" x="360" y="260" onclick="hld('svg12',2,5)" onmouseover="mrk('svg12',2,5)" onmouseout="unmrk('svg12',2,5)">nsubj</text>
+<text class="ln8 ln11 p8p11" x="1030" y="260" onclick="hld('svg12',8,11)" onmouseover="mrk('svg12',8,11)" onmouseout="unmrk('svg12',8,11)">advmod</text>
+<text class="ln7 ln11 p7p11" x="981" y="220" onclick="hld('svg12',7,11)" onmouseover="mrk('svg12',7,11)" onmouseout="unmrk('svg12',7,11)">aux</text>
+<text class="ln6 ln11 p6p11" x="932" y="180" onclick="hld('svg12',6,11)" onmouseover="mrk('svg12',6,11)" onmouseout="unmrk('svg12',6,11)">cc</text>
+<text class="ln5 ln0 p5p0" x="526" y="20" onclick="hld('svg12',5,0)" onmouseover="mrk('svg12',5,0)" onmouseout="unmrk('svg12',5,0)">root</text>
+<text class="ln11 ln5 p11p5" x="890" y="140" onclick="hld('svg12',11,5)" onmouseover="mrk('svg12',11,5)" onmouseout="unmrk('svg12',11,5)">conj</text>
+<text class="ln12 ln5 p12p5" x="918" y="100" onclick="hld('svg12',12,5)" onmouseover="mrk('svg12',12,5)" onmouseout="unmrk('svg12',12,5)">punct</text>
+</g>
+</g>
+<g class="enhanced">
+<g fill="none" stroke="black" stroke-width="1">
+<path class="ee1 ee2 q1q2" d="M77 388 L77 428 C77 348 77 348 109 348 C142 348 142 348 142 428 L142 388" />
+<path class="ee10 ee11 q10q11" d="M1100 388 L1100 428 C1100 348 1100 348 1128 348 C1156 348 1156 348 1156 428 L1156 388" />
+<path class="ee4 ee5 q4q5" d="M428 388 L428 428 C428 348 428 348 456 348 C484 348 484 348 484 428 L484 388" />
+<path class="ee3 ee5 q3q5" d="M316 388 L316 388 C316 308 316 308 407 308 C498 308 498 308 498 388 L498 388" />
+<path class="ee9 ee11 q9q11" d="M988 388 L988 388 C988 308 988 308 1079 308 C1170 308 1170 308 1170 388 L1170 388" />
+<path class="ee2 ee5 q2q5" d="M208 388 L208 348 C208 268 208 268 360 268 C512 268 512 268 512 348 L512 388" />
+<path class="ee8 ee11 q8q11" d="M876 388 L876 348 C876 268 876 268 1030 268 C1184 268 1184 268 1184 348 L1184 388" />
+<path class="ee7 ee11 q7q11" d="M764 388 L764 308 C764 228 764 228 981 228 C1198 228 1198 228 1198 308 L1198 388" />
+<path class="ee6 ee11 q6q11" d="M652 388 L652 268 C652 188 652 188 932 188 C1212 188 1212 188 1212 268 L1212 388" />
+<path class="ee5 q5q0" d="M526 388 L526 28" />
+<path class="ee11 ee5 q11q5" d="M1226 388 L1226 228 C1226 148 1226 148 890 148 C554 148 554 148 554 228 L554 388" />
+<path class="ee12 ee5 q12q5" d="M1296 388 L1296 188 C1296 108 1296 108 918 108 C540 108 540 108 540 188 L540 388" />
+<path class="ee2 ee11 q2q11" d="M175 388 L175 148 C175 68 175 68 707 68 C1240 68 1240 68 1240 148 L1240 388" />
+</g>
+<g fill="black" stroke-width="1" stroke="black">
+<path class="ee1 ee2 q1q2" d="M77 388 l3 -14 l-6 0 Z" />
+<path class="ee10 ee11 q10q11" d="M1100 388 l3 -14 l-6 0 Z" />
+<path class="ee4 ee5 q4q5" d="M428 388 l3 -14 l-6 0 Z" />
+<path class="ee3 ee5 q3q5" d="M316 388 l3 -14 l-6 0 Z" />
+<path class="ee9 ee11 q9q11" d="M988 388 l3 -14 l-6 0 Z" />
+<path class="ee2 ee5 q2q5" d="M208 388 l3 -14 l-6 0 Z" />
+<path class="ee8 ee11 q8q11" d="M876 388 l3 -14 l-6 0 Z" />
+<path class="ee7 ee11 q7q11" d="M764 388 l3 -14 l-6 0 Z" />
+<path class="ee6 ee11 q6q11" d="M652 388 l3 -14 l-6 0 Z" />
+<path class="ee5 ee0 q5q0" d="M526 388 l3 -14 l-6 0 Z" />
+<path class="ee11 ee5 q11q5" d="M1226 388 l3 -14 l-6 0 Z" />
+<path class="ee12 ee5 q12q5" d="M1296 388 l3 -14 l-6 0 Z" />
+<path class="ee2 ee11 q2q11" d="M175 388 l3 -14 l-6 0 Z" />
+</g>
+<g fill="white" stroke="white" stroke-width="1" opacity="0.9">
+<rect x="93" y="327" width="33" height="19" />
+<rect x="1093" y="327" width="70" height="19" />
+<rect x="421" y="327" width="70" height="19" />
+<rect x="389" y="287" width="36" height="19" />
+<rect x="1044" y="287" width="70" height="19" />
+<rect x="334" y="247" width="51" height="19" />
+<rect x="995" y="247" width="70" height="19" />
+<rect x="963" y="207" width="36" height="19" />
+<rect x="919" y="167" width="26" height="19" />
+<rect x="506" y="7" width="39" height="19" />
+<rect x="858" y="127" width="64" height="19" />
+<rect x="892" y="87" width="52" height="19" />
+<rect x="682" y="47" width="51" height="19" />
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">
+<text class="le1 le2 p1p2" x="109" y="340" onclick="hld('svg12',1,2)" onmouseover="mrk('svg12',1,2)" onmouseout="unmrk('svg12',1,2)">det</text>
+<text class="le10 le11 p10p11" x="1128" y="340" onclick="hld('svg12',10,11)" onmouseover="mrk('svg12',10,11)" onmouseout="unmrk('svg12',10,11)">advmod</text>
+<text class="le4 le5 p4p5" x="456" y="340" onclick="hld('svg12',4,5)" onmouseover="mrk('svg12',4,5)" onmouseout="unmrk('svg12',4,5)">advmod</text>
+<text class="le3 le5 p3p5" x="407" y="300" onclick="hld('svg12',3,5)" onmouseover="mrk('svg12',3,5)" onmouseout="unmrk('svg12',3,5)">aux</text>
+<text class="le9 le11 p9p11" x="1079" y="300" onclick="hld('svg12',9,11)" onmouseover="mrk('svg12',9,11)" onmouseout="unmrk('svg12',9,11)">advmod</text>
+<text class="le2 le5 p2p5" x="360" y="260" onclick="hld('svg12',2,5)" onmouseover="mrk('svg12',2,5)" onmouseout="unmrk('svg12',2,5)">nsubj</text>
+<text class="le8 le11 p8p11" x="1030" y="260" onclick="hld('svg12',8,11)" onmouseover="mrk('svg12',8,11)" onmouseout="unmrk('svg12',8,11)">advmod</text>
+<text class="le7 le11 p7p11" x="981" y="220" onclick="hld('svg12',7,11)" onmouseover="mrk('svg12',7,11)" onmouseout="unmrk('svg12',7,11)">aux</text>
+<text class="le6 le11 p6p11" x="932" y="180" onclick="hld('svg12',6,11)" onmouseover="mrk('svg12',6,11)" onmouseout="unmrk('svg12',6,11)">cc</text>
+<text class="le5 le0 p5p0" x="526" y="20" onclick="hld('svg12',5,0)" onmouseover="mrk('svg12',5,0)" onmouseout="unmrk('svg12',5,0)">root</text>
+<text class="le11 le5 p11p5" x="890" y="140" onclick="hld('svg12',11,5)" onmouseover="mrk('svg12',11,5)" onmouseout="unmrk('svg12',11,5)">conj:en</text>
+<text class="le12 le5 p12p5" x="918" y="100" onclick="hld('svg12',12,5)" onmouseover="mrk('svg12',12,5)" onmouseout="unmrk('svg12',12,5)">punct</text>
+<text class="le2 le11 p2p11" x="707" y="60" onclick="hld('svg12',2,11)" onmouseover="mrk('svg12',2,11)" onmouseout="unmrk('svg12',2,11)">nsubj</text>
+</g>
+</g>
+<g fill="#D0E0FF" stroke="black" stroke-width="1">
+<rect class="q1 en1 en2 ee1 ee2" x="4" y="388" width="104" height="48" rx="5" ry="5" />
+<rect class="q2 en1 en2 en5 ee1 ee2 ee5 ee11" x="116" y="388" width="119" height="48" rx="5" ry="5" />
+<rect class="q3 en3 en5 ee3 ee5" x="243" y="388" width="104" height="48" rx="5" ry="5" />
+<rect class="q4 en4 en5 ee4 ee5" x="355" y="388" width="104" height="48" rx="5" ry="5" />
+<rect class="q5 en4 en5 en3 en2 en0 en11 en12 ee4 ee5 ee3 ee2 ee0 ee11 ee12" x="467" y="388" width="104" height="48" rx="5" ry="5" />
+<rect class="q6 en6 en11 ee6 ee11" x="579" y="388" width="104" height="48" rx="5" ry="5" />
+<rect class="q7 en7 en11 ee7 ee11" x="691" y="388" width="104" height="48" rx="5" ry="5" />
+<rect class="q8 en8 en11 ee8 ee11" x="803" y="388" width="104" height="48" rx="5" ry="5" />
+<rect class="q9 en9 en11 ee9 ee11" x="915" y="388" width="104" height="48" rx="5" ry="5" />
+<rect class="q10 en10 en11 ee10 ee11" x="1027" y="388" width="104" height="48" rx="5" ry="5" />
+<rect class="q11 en10 en11 en9 en8 en7 en6 en5 ee10 ee11 ee9 ee8 ee7 ee6 ee5 ee2" x="1139" y="388" width="118" height="48" rx="5" ry="5" />
+<rect class="q12 en12 en5 ee12 ee5" x="1265" y="388" width="104" height="48" rx="5" ry="5" />
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle">
+<text x="56" y="407">DET</text>
+<text x="175" y="407">NOUN</text>
+<text x="295" y="407">AUX</text>
+<text x="407" y="407">ADJ</text>
+<text x="519" y="407">VERB</text>
+<text x="631" y="407">CCONJ</text>
+<text x="743" y="407">AUX</text>
+<text x="855" y="407">ADV</text>
+<text x="967" y="407">ADV</text>
+<text x="1079" y="407">ADV</text>
+<text x="1198" y="407">VERB</text>
+<text x="1317" y="407">PUNCT</text>
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle" font-style="italic">
+<text x="56" y="427">De</text>
+<text x="175" y="427">staatsschuld</text>
+<text x="295" y="427">is</text>
+<text x="407" y="427">fors</text>
+<text x="519" y="427">gestegen</text>
+<text x="631" y="427">en</text>
+<text x="743" y="427">zal</text>
+<text x="855" y="427">niet</text>
+<text x="967" y="427">vanzelf</text>
+<text x="1079" y="427">weer</text>
+<text x="1198" y="427">verminderen</text>
+<text x="1317" y="427">.</text>
+</g>
+<g opacity="0" stroke-width="1">
+<rect x="4" y="388" width="104" height="48" rx="5" ry="5" onclick="hold('svg12',1)" onmouseover="mark('svg12',1)" onmouseout="unmark('svg12',1)" />
+<rect x="116" y="388" width="119" height="48" rx="5" ry="5" onclick="hold('svg12',2)" onmouseover="mark('svg12',2)" onmouseout="unmark('svg12',2)" />
+<rect x="243" y="388" width="104" height="48" rx="5" ry="5" onclick="hold('svg12',3)" onmouseover="mark('svg12',3)" onmouseout="unmark('svg12',3)" />
+<rect x="355" y="388" width="104" height="48" rx="5" ry="5" onclick="hold('svg12',4)" onmouseover="mark('svg12',4)" onmouseout="unmark('svg12',4)" />
+<rect x="467" y="388" width="104" height="48" rx="5" ry="5" onclick="hold('svg12',5)" onmouseover="mark('svg12',5)" onmouseout="unmark('svg12',5)" />
+<rect x="579" y="388" width="104" height="48" rx="5" ry="5" onclick="hold('svg12',6)" onmouseover="mark('svg12',6)" onmouseout="unmark('svg12',6)" />
+<rect x="691" y="388" width="104" height="48" rx="5" ry="5" onclick="hold('svg12',7)" onmouseover="mark('svg12',7)" onmouseout="unmark('svg12',7)" />
+<rect x="803" y="388" width="104" height="48" rx="5" ry="5" onclick="hold('svg12',8)" onmouseover="mark('svg12',8)" onmouseout="unmark('svg12',8)" />
+<rect x="915" y="388" width="104" height="48" rx="5" ry="5" onclick="hold('svg12',9)" onmouseover="mark('svg12',9)" onmouseout="unmark('svg12',9)" />
+<rect x="1027" y="388" width="104" height="48" rx="5" ry="5" onclick="hold('svg12',10)" onmouseover="mark('svg12',10)" onmouseout="unmark('svg12',10)" />
+<rect x="1139" y="388" width="118" height="48" rx="5" ry="5" onclick="hold('svg12',11)" onmouseover="mark('svg12',11)" onmouseout="unmark('svg12',11)" />
+<rect x="1265" y="388" width="104" height="48" rx="5" ry="5" onclick="hold('svg12',12)" onmouseover="mark('svg12',12)" onmouseout="unmark('svg12',12)" />
+</g>
+<g fill="#D0E0FF" stroke="black" stroke-width="1">
+</g>
+<g font-family="FreeSans, Arial, Helvetica, sans-serif" font-size="16" font-style="italic" text-anchor="middle">
+</g>
+
+</svg>
+</div>
+<script type="text/javascript">
+tts['svg12'] = [
+['1', 'De','DET','Definite: Def','de','LID|bep|stan|rest'],
+['2', 'staatsschuld','NOUN','Gender: Com, Number: Sing','staat_schuld','N|soort|ev|basis|zijd|stan'],
+['3', 'is','AUX','Number: Sing, Tense: Pres, VerbForm: Fin','zijn','WW|pv|tgw|ev'],
+['4', 'fors','ADJ','Degree: Pos','fors','ADJ|vrij|basis|zonder'],
+['5', 'gestegen','VERB','VerbForm: Part','stijgen','WW|vd|vrij|zonder'],
+['6', 'en','CCONJ','','en','VG|neven'],
+['7', 'zal','AUX','Number: Sing, Tense: Pres, VerbForm: Fin','zullen','WW|pv|tgw|ev'],
+['8', 'niet','ADV','','niet','BW'],
+['9', 'vanzelf','ADV','','vanzelf','BW'],
+['10', 'weer','ADV','','weer','BW'],
+['11', 'verminderen','VERB','VerbForm: Inf','verminderen','WW|inf|vrij|zonder'],
+['12', '.','PUNCT','','.','LET']
+];toggle('svg12',false);
+</script>
+<div class="udcontrol">
+<input type="radio" id="btnbsvg12" name="btnsvg12" onclick="toggle('svg12',false)" class="rb" checked /><label for="btnbsvg12">Basic</label>
+<input type="radio" id="btnesvg12" name="btnsvg12" onclick="toggle('svg12',true)" class="re" /><label for="btnesvg12">Enhanced</label>
+</div>
+</body>
+</html>
